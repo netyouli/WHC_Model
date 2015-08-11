@@ -109,10 +109,24 @@
             NSMutableArray  * modelObjectArr = [NSMutableArray new];
             for (NSInteger i = 0; i < count; i++) {
                 id subModelObject = [self handleDataModelEngine:objectArr[i] arrKey:arrKey calssName:objc_getClass([arrKey UTF8String])];
-                [modelObjectArr addObject:subModelObject];
+                if(subModelObject){
+                    [modelObjectArr addObject:subModelObject];
+                }
             }
             modelObject = nil;
             return modelObjectArr;
+        }else if([object isKindOfClass:[NSString class]]){
+            if(object){
+                return object;
+            }else{
+                return @"";
+            }
+        }else if([object isKindOfClass:[NSNumber class]]){
+            if(object){
+                return object;
+            }else{
+                return @(0);
+            }
         }else{
             unsigned int propertyCount = 0;
             objc_property_t  * propertys = class_copyPropertyList(className, &propertyCount);
