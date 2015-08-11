@@ -5,6 +5,10 @@
 */
 自动把字典或者数据反射为模型数据类对象（支持json深层次嵌套，字典嵌套数组数组嵌套数组）
 
+
+###这个配合WHC_DataModelFactory mac工具使用将让你体验超神的感觉：github地址：https://github.com/netyouli/WHC_DataModelFactory
+###WHC_DataModelFactory mac工具说明:可以把json或者xml字符串自动生成模型类.m和.h文件内容
+剩出创建模型类的麻烦而且零错误率大大提高了开发效率
 ###JSON --> Model、Core Data Model
 ###JSONString --> Model、Core Data Model
 ###Model、Core Data Model --> JSON
