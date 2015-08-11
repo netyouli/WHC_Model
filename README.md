@@ -1,4 +1,8 @@
 # WHC_DataModel
+/*
+*  qq:712641411
+*  iOS大神qq群:460122071
+*/
 自动把字典或者数据反射为模型数据类对象（支持json深层次嵌套，字典嵌套数组数组嵌套数组）
 
 ###JSON --> Model、Core Data Model

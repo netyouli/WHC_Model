@@ -8,6 +8,7 @@
 
 /*
  *  qq:712641411
+ *  iOS大神qq群:460122071
  *  gitHub:https://github.com/netyouli
  *  csdn:http://blog.csdn.net/windwhc/article/category/3117381
  */
@@ -28,7 +29,12 @@
     }
     return self;
 }
-
+/*参数说明
+ array:json数组对象
+ className:对象模型类
+ 功能说明:把json数组对象解析为className对象模型数组
+ 返回className对象模型数组
+ */
 + (NSArray*)dataModelWithArray:(NSArray*)array className:(Class)className{
     NSMutableArray * _array = [NSMutableArray new];
     for (NSDictionary * dict in array) {
@@ -37,6 +43,12 @@
     return _array;
 }
 
+/*参数说明
+ dictionary:json字典对象
+ className:对象模型类
+ 功能说明:把json字典对象解析为className对象
+ 返回className对象
+ */
 + (id)dataModelWithDictionary:(NSDictionary*)dictionary className:(Class)className{
     WHC_DataModel  * whcDataModel = [WHC_DataModel new];
     id object = [whcDataModel handleDataModelEngine:dictionary arrKey:@"" calssName:className];
@@ -72,13 +84,22 @@
                         [modelObject setValue:subModelObject forKey:keyArr[i]];
                     }else if ([subObject isKindOfClass:[NSArray class]]){
                         id subModelObject = [self handleDataModelEngine:subObject arrKey:keyArr[i] calssName:objc_getClass([keyArr[i] UTF8String])];
-                       [modelObject setValue:[subModelObject mutableCopy] forKey:keyArr[i]];
+                        [modelObject setValue:[subModelObject mutableCopy] forKey:keyArr[i]];
                     }else if ([subObject isKindOfClass:[NSString class]] ||
                               [subObject isKindOfClass:[NSNumber class]]){
-                        [modelObject setValue:subObject forKey:keyArr[i]];
+                        if(subObject){
+                            [modelObject setValue:subObject forKey:keyArr[i]];
+                        }else{
+                            [modelObject setValue:@"" forKey:keyArr[i]];
+                        }
                     }else{
-                        id subModelObject = [self handleDataModelEngine:subObject arrKey:keyArr[i] calssName:objc_getClass([keyArr[i] UTF8String])];
-                        [modelObject setValue:subModelObject forKey:keyArr[i]];
+                        
+                        if(subObject && ![subObject isKindOfClass:[NSNull class]]){
+                            id subModelObject = [self handleDataModelEngine:subObject arrKey:keyArr[i] calssName:objc_getClass([keyArr[i] UTF8String])];
+                            [modelObject setValue:subModelObject forKey:keyArr[i]];
+                        }else{
+                            [modelObject setValue:@"" forKey:keyArr[i]];
+                        }
                     }
                 }
             }
@@ -111,11 +132,20 @@
                         [modelObject setValue:subModelObject forKey:propertyName];
                     }else if(propertyClass == [NSString class] ||
                              propertyClass == [NSNumber class]){
-                        [modelObject setValue:[object objectForKey:propertyName] forKey:propertyName];
+                        id value = [object objectForKey:propertyName];
+                        if(value && ![value isKindOfClass:[NSNull class]]){
+                            [modelObject setValue:value forKey:propertyName];
+                        }else{
+                            [modelObject setValue:@"" forKey:propertyName];
+                        }
                     }else if (propertyClass == objc_getClass([propertyName UTF8String])){
                         id subObject = [object objectForKey:propertyName];
-                        id subModelObject = [self handleDataModelEngine:subObject arrKey:propertyName calssName:objc_getClass([propertyName UTF8String])];
-                        [modelObject setValue:subModelObject forKey:propertyName];
+                        if(subObject && ![subObject isKindOfClass:[NSNull class]]){
+                            id subModelObject = [self handleDataModelEngine:subObject arrKey:propertyName calssName:objc_getClass([propertyName UTF8String])];
+                            [modelObject setValue:subModelObject forKey:propertyName];
+                        }else{
+                            [modelObject setValue:@"" forKey:propertyName];
+                        }
                     }
                 }
             }
