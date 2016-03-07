@@ -1,9 +1,6 @@
 # WHC_DataModel
-/*
-*  qq:712641411
-*  iOS大神qq群:460122071
-*/
-自动把字典或者数据反射为模型数据类对象（支持json深层次嵌套，字典嵌套数组数组嵌套数组）
+###qq:712641411
+###自动把字典或者数据反射为模型数据类对象（支持json深层次嵌套，字典嵌套数组数组嵌套数组）
 
 
 ###这个配合WHC_DataModelFactory mac工具使用将让你体验超神的感觉：github地址：https://github.com/netyouli/WHC_DataModelFactory
