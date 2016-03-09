@@ -17,20 +17,36 @@
 
 @interface WHC_DataModel : NSObject
 
-/*参数说明
- array:json数组对象
- className:对象模型类
- 功能说明:把json数组对象解析为className对象模型数组
- 返回className对象模型数组
-*/
+/** 说明
+ * array:json数组对象
+ * className:对象模型类
+ * 功能说明:把json数组对象解析为className对象模型数组
+ * 返回className对象模型数组
+ */
 + (NSArray*)dataModelWithArray:(NSArray*)array className:(Class)className;
 
-/*参数说明
- dictionary:json字典对象
- className:对象模型类
- 功能说明:把json字典对象解析为className对象
- 返回className对象
+/** 说明
+ * dictionary:json字典对象
+ * className:对象模型类
+ * 功能说明:把json字典对象解析为className对象
+ * 返回className对象
  */
 + (id)dataModelWithDictionary:(NSDictionary*)dictionary className:(Class)className;
+
+/** 说明
+ * data 数组数据对象
+ * className:对象模型类
+ * 功能说明:把json数组对象解析为className对象模型数组
+ * 返回className对象模型数组
+ */
++ (NSArray *)dataModelWithArrayData:(NSData *)data className:(Class)className;
+
+/** 说明
+ * data :字典数据对象
+ * className:对象模型类
+ * 功能说明:把json字典对象解析为className对象
+ * 返回className对象
+ */
++ (id)dataModelWithDictionaryData:(NSData *)data className:(Class)className;
 
 @end
