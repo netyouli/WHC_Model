@@ -8,9 +8,8 @@
 
 /*
  *  qq:712641411
- *  iOSqq群:460122071
+ *  iOS群: 302157745
  *  gitHub:https://github.com/netyouli
- *  csdn:http://blog.csdn.net/windwhc/article/category/3117381
  */
 
 #import <Foundation/Foundation.h>

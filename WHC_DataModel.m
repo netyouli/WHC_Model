@@ -8,8 +8,8 @@
 
 /*
  *  qq:712641411
+ *  iOS群: 302157745
  *  gitHub:https://github.com/netyouli
- *  csdn:http://blog.csdn.net/windwhc/article/category/3117381
  */
 
 #import "WHC_DataModel.h"
@@ -82,72 +82,37 @@
     return strClassName;
 }
 
-- (BOOL)existproperty:(NSString *)property withObject:(NSObject *)object{
+- (NSString *)existproperty:(NSString *)property withObject:(NSObject *)object{
     unsigned int  propertyCount = 0;
-    Ivar *vars = class_copyIvarList([object class], &propertyCount);
-    for (NSInteger i = 0; i < propertyCount; i++) {
-        Ivar var = vars[i];
-        NSRange prefixRange = {0,1};
-        NSString * originalProperty = [NSString stringWithUTF8String:ivar_getName(var)];
-        if([[originalProperty substringWithRange:prefixRange] isEqualToString:@"_"]) {
-            originalProperty = [originalProperty substringFromIndex:1];
-        }
-        if([property isEqualToString:originalProperty]){
-            if (vars) {
-                free(vars);
-            }
-            return YES;
+    objc_property_t *properties = class_copyPropertyList([object class], &propertyCount);
+    for (unsigned int i = 0; i < propertyCount; ++i) {
+        objc_property_t property_t = properties[i];
+        const char * name = property_getName(property_t);
+        NSString * nameString = [NSString stringWithUTF8String:name];
+        if ([nameString.lowercaseString isEqualToString:property.lowercaseString]) {
+            return nameString;
         }
     }
-    if (vars) {
-        free(vars);
-    }
-    return NO;
+    return nil;
 }
 
 - (Class)classExistProperty:(NSString *)property withObject:(NSObject *)object{
-    Class  class = [NSNull class];
-    unsigned int  propertyCount = 0;
-    Ivar *vars = class_copyIvarList([object class], &propertyCount);
-    for (NSInteger i = 0; i < propertyCount; i++) {
-        Ivar var = vars[i];
-        NSRange prefixRange = {0,1};
-        NSString * originalProperty = [NSString stringWithUTF8String:ivar_getName(var)];
-        if([[originalProperty substringWithRange:prefixRange] isEqualToString:@"_"]) {
-            originalProperty = [originalProperty substringFromIndex:1];
-        }
-        if([property isEqualToString:originalProperty]){
-            NSString * type = [NSString stringWithUTF8String:ivar_getTypeEncoding(var)];
-            if([type hasPrefix:@"@"]){
-                type = [type stringByReplacingOccurrencesOfString:@"@" withString:@""];
-                type = [type stringByReplacingOccurrencesOfString:@"\"" withString:@""];
-                class = NSClassFromString(type);
-            }
-        }
-    }
-    if (vars) {
-        free(vars);
-    }
-    return class;
-}
-
-- (NSString *)getClassProperty:(Class)class key:(NSString *)key {
-    if (key != nil && key.length > 0) {
+    if (property != nil && property.length > 0) {
         unsigned int  propertyCount = 0;
-        objc_property_t *properties = class_copyPropertyList(class, &propertyCount);
+        objc_property_t *properties = class_copyPropertyList([object class], &propertyCount);
         for (unsigned int i = 0; i < propertyCount; ++i) {
-            objc_property_t property = properties[i];
-            const char * name = property_getName(property);
+            objc_property_t property_t = properties[i];
+            const char * name = property_getName(property_t);
             NSString * nameStr = [NSString stringWithUTF8String:name];
-            if ([nameStr isEqualToString:key]) {
-                const char * attributes = property_getAttributes(property);
+            if ([nameStr.lowercaseString isEqualToString:property.lowercaseString]) {
+                const char * attributes = property_getAttributes(property_t);
                 NSString * attr = [NSString stringWithUTF8String:attributes];
                 NSArray * arrayString = [attr componentsSeparatedByString:@"\""];
-                return arrayString[1];
+                return NSClassFromString(arrayString[1]);
             }
         }
     }
-    return key;
+    return [NSNull class];
 }
 
 - (id)handleDataModelEngine:(id)object arrKey:(NSString*)arrKey calssName:(Class)className{
@@ -160,42 +125,44 @@
             for (NSInteger i = 0; i < count; i++) {
                 id subObject = dict[keyArr[i]];
                 if(subObject){
-                    if([self classExistProperty:keyArr[i] withObject:modelObject] == [NSDictionary class]){
-                        if([subObject isKindOfClass:[NSNull class]]){
-                            [modelObject setValue:@{} forKey:keyArr[i]];
-                        }else{
-                            id subModelObject = [self handleDataModelEngine:subObject arrKey:keyArr[i] calssName:objc_getClass([keyArr[i] UTF8String])];
-                            [modelObject setValue:subModelObject forKey:keyArr[i]];
-                        }
-                    }else if ([self classExistProperty:keyArr[i] withObject:modelObject] == [NSArray class]){
-                        if([subObject isKindOfClass:[NSNull class]]){
-                            [modelObject setValue:@[] forKey:keyArr[i]];
-                        }else{
-                            id subModelObject = [self handleDataModelEngine:subObject arrKey:keyArr[i] calssName:objc_getClass([keyArr[i] UTF8String])];
-                            [modelObject setValue:[subModelObject mutableCopy] forKey:keyArr[i]];
-                        }
-                    }else if ([self classExistProperty:keyArr[i] withObject:modelObject] == [NSString class]){
-                        if([subObject isKindOfClass:[NSNull class]]){
-                            [modelObject setValue:@"" forKey:keyArr[i]];
-                        }else{
-                            [modelObject setValue:subObject forKey:keyArr[i]];
-                        }
-                    }else if ([self classExistProperty:keyArr[i] withObject:modelObject] == [NSNumber class]){
-                        if([subObject isKindOfClass:[NSNull class]]){
-                            [modelObject setValue:@(0) forKey:keyArr[i]];
-                        }else{
-                            [modelObject setValue:subObject forKey:keyArr[i]];
-                        }
-                    }else{
-                        if(subObject && ![subObject isKindOfClass:[NSNull class]]){
-                            Class class = objc_getClass([[self getClassProperty:[modelObject class] key:keyArr[i]] UTF8String]);
-                            id subModelObject = [self handleDataModelEngine:subObject arrKey:keyArr[i] calssName:class];
-                            if([self existproperty:keyArr[i] withObject:modelObject]){
-                                [modelObject setValue:subModelObject forKey:keyArr[i]];
+                    NSString * actualProperty = [self existproperty:keyArr[i] withObject:modelObject];
+                    if (actualProperty != nil) {
+                        if([self classExistProperty:keyArr[i] withObject:modelObject] == [NSDictionary class]){
+                            if([subObject isKindOfClass:[NSNull class]]){
+                                [modelObject setValue:@{} forKey:actualProperty];
+                            }else{
+                                id subModelObject = [self handleDataModelEngine:subObject arrKey:keyArr[i] calssName:objc_getClass([keyArr[i] UTF8String])];
+                                [modelObject setValue:subModelObject forKey:actualProperty];
+                            }
+                        }else if ([self classExistProperty:keyArr[i] withObject:modelObject] == [NSArray class]){
+                            if([subObject isKindOfClass:[NSNull class]]){
+                                [modelObject setValue:@[] forKey:actualProperty];
+                            }else{
+                                id subModelObject = [self handleDataModelEngine:subObject arrKey:keyArr[i] calssName:objc_getClass([keyArr[i] UTF8String])];
+                                NSString * actualProperty = [self existproperty:keyArr[i] withObject:modelObject];
+                                [modelObject setValue:[subModelObject mutableCopy] forKey:actualProperty];
+                            }
+                        }else if ([self classExistProperty:keyArr[i] withObject:modelObject] == [NSString class]){
+                            if([subObject isKindOfClass:[NSNull class]]){
+                                [modelObject setValue:@"" forKey:actualProperty];
+                            }else{
+                                [modelObject setValue:subObject forKey:actualProperty];
+                            }
+                        }else if ([self classExistProperty:keyArr[i] withObject:modelObject] == [NSNumber class]){
+                            if([subObject isKindOfClass:[NSNull class]]){
+                                [modelObject setValue:@(0) forKey:actualProperty];
+                            }else{
+                                [modelObject setValue:subObject forKey:actualProperty];
                             }
                         }else{
-                            if([self existproperty:keyArr[i] withObject:modelObject]){
-                                [modelObject setValue:@"" forKey:keyArr[i]];
+                            if(subObject && ![subObject isKindOfClass:[NSNull class]]){
+                                Class class = [self classExistProperty:keyArr[i] withObject:modelObject];
+                                if (class != [NSNull class]) {
+                                    id subModelObject = [self handleDataModelEngine:subObject arrKey:keyArr[i] calssName:class];
+                                        [modelObject setValue:subModelObject forKey:actualProperty];
+                                }
+                            }else{
+                                [modelObject setValue:@"" forKey:actualProperty];
                             }
                         }
                     }
@@ -231,44 +198,46 @@
             for (int i = 0; i < propertyCount; i++) {
                 NSString * propertyName = @(property_getName(propertys[i]));
                 NSString * classType = [self getClassNameString:property_getAttributes(propertys[i])];
-                if(classType){
-                    Class propertyClass = objc_getClass([classType UTF8String]);
-                    if(propertyClass == [NSDictionary class]){
-                        id subObject = [object objectForKey:propertyName];
-                        if([subObject isKindOfClass:[NSNull class]]){
-                            [modelObject setValue:@{} forKey:propertyName];
-                        }else{
-                            id subModelObject = [self handleDataModelEngine:subObject arrKey:propertyName calssName:objc_getClass([propertyName UTF8String])];
-                            [modelObject setValue:subModelObject forKey:propertyName];
-                        }
-                    }else if (propertyClass == [NSArray class]){
-                        id subObject = [object objectForKey:propertyName];
-                        if([subObject isKindOfClass:[NSNull class]]){
-                            [modelObject setValue:@[] forKey:propertyName];
-                        }else{
-                            id subModelObject = [self handleDataModelEngine:subObject arrKey:propertyName calssName:objc_getClass([arrKey UTF8String])];
-                            [modelObject setValue:subModelObject forKey:propertyName];
-                        }
-                    }else if(propertyClass == [NSString class] ||
-                             propertyClass == [NSNumber class]){
-                        id value = [object objectForKey:propertyName];
-                        if(value && ![value isKindOfClass:[NSNull class]]){
-                            [modelObject setValue:value forKey:propertyName];
-                        }else{
-                            if([value isKindOfClass:[NSString class]]){
-                                [modelObject setValue:@"" forKey:propertyName];
+                if (propertyName != nil) {
+                    if(classType){
+                        Class propertyClass = objc_getClass([classType UTF8String]);
+                        if(propertyClass == [NSDictionary class]){
+                            id subObject = [object objectForKey:propertyName];
+                            if([subObject isKindOfClass:[NSNull class]]){
+                                [modelObject setValue:@{} forKey:propertyName];
                             }else{
-                                [modelObject setValue:@(0) forKey:propertyName];
+                                id subModelObject = [self handleDataModelEngine:subObject arrKey:propertyName calssName:objc_getClass([propertyName UTF8String])];
+                                [modelObject setValue:subModelObject forKey:propertyName];
                             }
-                        }
-                    }else if (propertyClass == objc_getClass([propertyName UTF8String])){
-                        Class class = objc_getClass([propertyName UTF8String]);
-                        id subObject = [object objectForKey:propertyName];
-                        if(subObject && ![subObject isKindOfClass:[NSNull class]]){
-                            id subModelObject = [self handleDataModelEngine:subObject arrKey:propertyName calssName:class];
-                            [modelObject setValue:subModelObject forKey:propertyName];
-                        }else{
-                            [modelObject setValue:[objc_getClass([propertyName UTF8String]) new] forKey:propertyName];
+                        }else if (propertyClass == [NSArray class]){
+                            id subObject = [object objectForKey:propertyName];
+                            if([subObject isKindOfClass:[NSNull class]]){
+                                [modelObject setValue:@[] forKey:propertyName];
+                            }else{
+                                id subModelObject = [self handleDataModelEngine:subObject arrKey:propertyName calssName:objc_getClass([arrKey UTF8String])];
+                                [modelObject setValue:subModelObject forKey:propertyName];
+                            }
+                        }else if(propertyClass == [NSString class] ||
+                                 propertyClass == [NSNumber class]){
+                            id value = [object objectForKey:propertyName];
+                            if(value && ![value isKindOfClass:[NSNull class]]){
+                                [modelObject setValue:value forKey:propertyName];
+                            }else{
+                                if([value isKindOfClass:[NSString class]]){
+                                    [modelObject setValue:@"" forKey:propertyName];
+                                }else{
+                                    [modelObject setValue:@(0) forKey:propertyName];
+                                }
+                            }
+                        }else if (propertyClass == objc_getClass([propertyName UTF8String])){
+                            Class class = objc_getClass([propertyName UTF8String]);
+                            id subObject = [object objectForKey:propertyName];
+                            if(subObject && ![subObject isKindOfClass:[NSNull class]]){
+                                id subModelObject = [self handleDataModelEngine:subObject arrKey:propertyName calssName:class];
+                                [modelObject setValue:subModelObject forKey:propertyName];
+                            }else{
+                                [modelObject setValue:[objc_getClass([propertyName UTF8String]) new] forKey:propertyName];
+                            }
                         }
                     }
                 }
