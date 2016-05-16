@@ -54,6 +54,20 @@
     return [WHC_DataModel dataModelWithDictionary:dict className:className];
 }
 
++ (id)dataModelWithJson:(NSString *)json className:(Class)className {
+    NSData * jsonData = [json dataUsingEncoding:NSUTF8StringEncoding];
+    return [self dataModelWithJsonData:jsonData className:className];
+}
+
++ (id)dataModelWithJsonData:(NSData *)jsonData className:(Class)className {
+    NSObject * object = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:nil];
+    if ([object isKindOfClass:[NSArray class]]) {
+        return [self dataModelWithArray:(NSArray *)object className:className];
+    }
+    return [self dataModelWithDictionary:(NSDictionary *)object className:className];
+}
+
+
 - (NSString *)getClassNameString:(const char *)attr{
     NSString * strClassName = nil;
     NSString * attrStr = @(attr);
