@@ -1,6 +1,13 @@
 # WHC_DataModel
-###qq:712641411
-###自动把字典或者数据反射为模型数据类对象（支持json深层次嵌套，字典嵌套数组数组嵌套数组）
+## WHC_DataModel 功能说明:
+### 1.模型转换库支持json到模型对象
+### 2.模型对象到json的转换
+### 3.同时支持json和模型对象的无限嵌套
+### 4.解析效率高
+
+#### qq:712641411
+####  iOS群: 302157745
+#### gitHub:https://github.com/netyouli/WHC_DataModel
 
 
 ###这个配合WHC_DataModelFactory mac工具使用将让你体验超神的感觉：github地址：https://github.com/netyouli/WHC_DataModelFactory
