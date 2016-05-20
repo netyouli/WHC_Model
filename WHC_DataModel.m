@@ -6,30 +6,26 @@
 //  Copyright (c) 2015年 吴海超. All rights reserved.
 //
 
+/* WHC_DataModel 功能说明:
+ * 1.模型转换库支持json到模型对象
+ * 2.模型对象到json的转换
+ * 3.同时支持json和模型对象的无限嵌套
+ * 4.解析效率高
+ */
+
 /*
  *  qq:712641411
  *  iOS群: 302157745
- *  gitHub:https://github.com/netyouli
+ *  gitHub:https://github.com/netyouli/WHC_DataModel
  */
 
 #import "WHC_DataModel.h"
 #import <objc/runtime.h>
 #define kWHCKey    (@"")
-@interface WHC_DataModel (){
-    
-}
 
-@end
 @implementation WHC_DataModel
 
-- (instancetype)init{
-    self = [super init];
-    if(self){
-        
-    }
-    return self;
-}
-
+#pragma mark - json转模型对象 Api -
 + (NSArray *)dataModelWithArrayData:(NSData *)data className:(Class)className{
     NSArray * array = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
     return [WHC_DataModel dataModelWithArray:array className:className];
@@ -67,6 +63,107 @@
     return [self dataModelWithDictionary:(NSDictionary *)object className:className];
 }
 
+#pragma mark - 模型对象转json Api -
++ (NSString *)jsonWithDataModel:(NSObject *)model {
+    NSDictionary * jsonDictionary = [self jsonDictionaryWithDataModel:model];
+    NSData * jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:nil];
+    return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+}
+
++ (NSDictionary *)jsonDictionaryWithDataModel:(NSObject *)model {
+    NSMutableDictionary * jsonDictionary = [NSMutableDictionary dictionary];
+    if (model == nil) return jsonDictionary;
+    unsigned int propertyCount = 0;
+    objc_property_t * properties = class_copyPropertyList([model class], &propertyCount);
+    for (unsigned int i = 0; i < propertyCount; i++) {
+        objc_property_t property = properties[i];
+        const char * name = property_getName(property);
+        NSString * propertyName = [NSString stringWithUTF8String:name];
+        
+        const char * propertyAttributes = property_getAttributes(property);
+        NSString * attributesString = [NSString stringWithUTF8String:propertyAttributes];
+        NSArray * attributesArray = [attributesString componentsSeparatedByString:@"\""];
+        if (attributesArray.count == 1) {
+            id value = [model valueForKey:propertyName];
+            [jsonDictionary setObject:value forKey:propertyName];
+        }else {
+            Class classType = NSClassFromString(attributesArray[1]);
+            if (classType == [NSString class]) {
+                NSString * value = [model valueForKey:propertyName];
+                if (value == nil) value = @"";
+                [jsonDictionary setObject:value forKey:propertyName];
+            }else if (classType == [NSNumber class]) {
+                NSNumber * value = [model valueForKey:propertyName];
+                if (value == nil) value = @(0);
+                [jsonDictionary setObject:value forKey:propertyName];
+            }else if (classType == [NSDictionary class]) {
+                NSDictionary * value = [model valueForKey:propertyName];
+                if (value == nil) value = @{};
+                NSArray * allKey = value.allKeys;
+                if (allKey.count == 0) {
+                    [jsonDictionary setObject:value forKey:propertyName];
+                }else {
+                    [jsonDictionary setObject:[self parserDictionaryEngine:value] forKey:propertyName];
+                }
+            }else if (classType == [NSArray class]) {
+                NSArray * value = [model valueForKey:propertyName];
+                if (value == nil) value = @[];
+                if (value.count == 0) {
+                    [jsonDictionary setObject:value forKey:propertyName];
+                }else {
+                    [jsonDictionary setObject:[self parserArrayEngine:value] forKey:propertyName];
+                }
+            }else {
+                id value = [model valueForKey:propertyName];
+                if (value == nil) {
+                    value = [classType new];
+                }
+                [jsonDictionary setObject:[self jsonDictionaryWithDataModel:value] forKey:propertyName];
+            }
+        }
+    }
+    return jsonDictionary;
+}
+
+#pragma mark - 模型对象转json解析引擎(private) -
+
++ (NSDictionary *)parserDictionaryEngine:(NSDictionary *)value {
+    NSMutableDictionary * subJsonDictionary = [NSMutableDictionary dictionary];
+    NSArray * allKey = value.allKeys;
+    for (NSString * key in allKey) {
+        id subValue = value[key];
+        if ([subValue isKindOfClass:[NSString class]] ||
+            [subValue isKindOfClass:[NSNumber class]]) {
+            [subJsonDictionary setObject:subValue forKey:key];
+        }else if ([subValue isKindOfClass:[NSDictionary class]]){
+            [subJsonDictionary setObject:[self parserDictionaryEngine:subValue] forKey:key];
+        }else if ([subValue isKindOfClass:[NSArray class]]) {
+            [subJsonDictionary setObject:[self parserArrayEngine:subValue] forKey:key];
+        }else {
+            [subJsonDictionary setObject:[self jsonDictionaryWithDataModel:subValue] forKey:key];
+        }
+    }
+    return subJsonDictionary;
+}
+
++ (NSArray *)parserArrayEngine:(NSArray *)value {
+    NSMutableArray * subJsonArray = [NSMutableArray array];
+    for (id subValue in subJsonArray) {
+        if ([subValue isKindOfClass:[NSString class]] ||
+            [subValue isKindOfClass:[NSNumber class]]) {
+            [subJsonArray addObject:subValue];
+        }else if ([subValue isKindOfClass:[NSDictionary class]]){
+            [subJsonArray addObject:[self parserDictionaryEngine:subValue]];
+        }else if ([subValue isKindOfClass:[NSArray class]]) {
+            [subJsonArray addObject:[self parserArrayEngine:subValue]];
+        }else {
+            [subJsonArray addObject:[self jsonDictionaryWithDataModel:subValue]];
+        }
+    }
+    return subJsonArray;
+}
+
+#pragma mark - json转模型对象解析引擎(private) -
 
 - (NSString *)getClassNameString:(const char *)attr{
     NSString * strClassName = nil;
@@ -90,9 +187,11 @@
         const char * name = property_getName(property_t);
         NSString * nameString = [NSString stringWithUTF8String:name];
         if ([nameString.lowercaseString isEqualToString:property.lowercaseString]) {
+            free(properties);
             return nameString;
         }
     }
+    free(properties);
     return nil;
 }
 
@@ -108,9 +207,11 @@
                 const char * attributes = property_getAttributes(property_t);
                 NSString * attr = [NSString stringWithUTF8String:attributes];
                 NSArray * arrayString = [attr componentsSeparatedByString:@"\""];
+                free(properties);
                 return NSClassFromString(arrayString[1]);
             }
         }
+        free(properties);
     }
     return [NSNull class];
 }
