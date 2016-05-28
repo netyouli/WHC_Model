@@ -122,6 +122,7 @@
             }
         }
     }
+    free(properties);
     return jsonDictionary;
 }
 
