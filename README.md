@@ -5,8 +5,8 @@
 #### 3.同时支持json和模型对象的无限嵌套
 #### 4.解析效率高
 
-###### qq:712641411
-######  iOS群: 302157745
+###咨询qq:712641411
+###作者：吴海超
 
 
 ###这个配合WHC_DataModelFactory mac工具使用将让你体验超神的感觉：github地址：https://github.com/netyouli/WHC_DataModelFactory
