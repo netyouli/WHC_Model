@@ -59,6 +59,7 @@
 
 /** 说明:把json解析为模型对象
  *@param json :json 字符串
+ *@param prefix: 自定义模型类前缀名称
  *@return 模型对象
  */
 + (id)modelWithJson:(NSString *)json;
