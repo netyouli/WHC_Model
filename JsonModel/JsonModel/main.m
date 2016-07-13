@@ -20,20 +20,22 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "WHC_DataModel.h"
+#import "TestModel.h"
+#import "NSObject+WHC_Model.h"
 
-@interface TXT : NSObject
+@interface JS_TXT : NSObject
 @property (nonatomic, copy)NSString * test;
 @property (nonatomic, strong) NSNumber * tt;
 @end
 
-@implementation TXT
+@implementation JS_TXT
 @end
 
 @interface WHC : NSObject
 @property (nonatomic, copy) NSString * Demo;
-@property (nonatomic, strong) TXT * txt;
+@property (nonatomic, strong) JS_TXT * txt;
 @property (nonatomic, strong) NSNumber * dd;
+@property (nonatomic, assign) NSInteger age;
 @end
 
 @implementation WHC
@@ -42,26 +44,42 @@
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         // insert code here...
-        NSLog(@"Hello, World!");
         
-        /// WHC_DataModel 支持无限类嵌套(字典/数组),高效的数据解析引擎(深度递归)
-        /// WHC_DataModel 强大的容错机制(允许json里的key和类型模型属性名称字符大小写可以不一样照样解析)
+        
+        NSString * testJson = @"{ \"programmers\": [    { \"firstName\": \"Brett\", \"lastName\":\"McLaughlin\",\"email\": \"brett@newInstance.com\" },    { \"firstName\": \"Jason\", \"lastName\":\"Hunter\",\"email\": \"jason@servlets.com\" },    { \"firstName\": \"Elliotte\", \"lastName\":\"Harold\",\"email\": \"elharo@macfaq.com\" }   ],  \"authors\": [    { \"firstName\": \"Isaac\",\"lastName\": \"Asimov\", \"genre\": \"science fiction\" },    { \"firstName\": \"Tad\",\"lastName\": \"Williams\", \"genre\": \"fantasy\" },    { \"firstName\": \"Frank\",\"lastName\": \"Peretti\", \"genre\": \"christian fiction\" }   ],  \"musicians\": [{ \"firstName\": \"Eric\", \"lastName\": \"Clapton\", \"instrument\": \"guitar\" },{ \"firstName\": \"Sergei\", \"lastName\": \"Rachmaninoff\", \"instrument\": \"piano\" }   ]  }";
+        
+        //// json转model
+        TestModel * model = [TestModel modelWithJson:testJson classPrefix:@"JS_"];
+        
+        /// 模型转json
+        NSLog(@"%@",[model json]);
+        
+        
+        NSLog(@"========================================");
+        /// WHC_Model 支持无限类嵌套(字典/数组),高效的数据解析引擎(深度递归)
+        /// WHC_Model 强大的容错机制(允许json里的key和类型模型属性名称字符大小写可以不一样照样解析)
         
         /// 使用简单演示例子
-        NSDictionary * jsonDict = @{@"demo":@"模型类转换测试",@"Dd":@(32),@"TXT":@{@"tEst":@"123456",@"tt":@(12)}};
+        NSDictionary * jsonDict = @{@"demo":@"模型类转换测试",@"Dd":@(32),@"age":@(25),@"TXT":@{@"tEst":@"123456",@"tt":@(12)}};
         
         
         /// json转模型示例
-        WHC * whc = [WHC_DataModel dataModelWithDictionary:jsonDict className:[WHC class]];
+        WHC * whc = [WHC modelWithDictionary:jsonDict];
+        
+        /// 自定义添加解析模型类前缀
+        WHC * whc1 = [WHC modelWithDictionary:jsonDict classPrefix:@"JS_"];
         
         /// 模型转json示例
-        NSString * whcJson = [WHC_DataModel jsonWithDataModel:whc];
+        NSString * whcJson = [whc json];
         NSLog(@"whcJson = %@",whcJson);
         
+        NSString * whcJson1 = [whc1 json];
+        NSLog(@"whcJson = %@",whcJson1);
         
-        /// 其他api接口就不一一演示请看WHC_DataModel.h api文档说明
+        NSLog(@"========================================");
+        /// 其他api接口就不一一演示请看WHC_Model api文档说明
         /// github文档：https://github.com/netyouli/WHC_DataModel
-        /// 如果结合本示例和WHC_DataModel.h api文档说明最后还是不会使用那么我建议你放弃做iOS开发。
+        /// 如果结合本示例和WHC_Model api文档说明最后还是不会使用那么我建议你放弃做iOS开发。
     }
     return 0;
 }

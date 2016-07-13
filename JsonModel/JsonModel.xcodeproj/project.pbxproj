@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		849EB1541CE9A78500248AC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 849EB1531CE9A78500248AC4 /* main.m */; };
-		849EB15C1CE9A79500248AC4 /* WHC_DataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 849EB15B1CE9A79500248AC4 /* WHC_DataModel.m */; };
+		FE3700F91D35DA3A006AD222 /* NSObject+WHC_Model.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3700F81D35DA3A006AD222 /* NSObject+WHC_Model.m */; };
+		FEF3ACB91D34EC7D00B7E299 /* TestModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF3ACB81D34EC7D00B7E299 /* TestModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,8 +27,10 @@
 /* Begin PBXFileReference section */
 		849EB1501CE9A78500248AC4 /* JsonModel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = JsonModel; sourceTree = BUILT_PRODUCTS_DIR; };
 		849EB1531CE9A78500248AC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		849EB15A1CE9A79500248AC4 /* WHC_DataModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WHC_DataModel.h; path = ../WHC_DataModel.h; sourceTree = "<group>"; };
-		849EB15B1CE9A79500248AC4 /* WHC_DataModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WHC_DataModel.m; path = ../WHC_DataModel.m; sourceTree = "<group>"; };
+		FE3700F71D35DA3A006AD222 /* NSObject+WHC_Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+WHC_Model.h"; sourceTree = "<group>"; };
+		FE3700F81D35DA3A006AD222 /* NSObject+WHC_Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+WHC_Model.m"; sourceTree = "<group>"; };
+		FEF3ACB71D34EC7D00B7E299 /* TestModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestModel.h; sourceTree = "<group>"; };
+		FEF3ACB81D34EC7D00B7E299 /* TestModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,8 +47,8 @@
 		849EB1471CE9A78500248AC4 = {
 			isa = PBXGroup;
 			children = (
-				849EB15A1CE9A79500248AC4 /* WHC_DataModel.h */,
-				849EB15B1CE9A79500248AC4 /* WHC_DataModel.m */,
+				FE3700F71D35DA3A006AD222 /* NSObject+WHC_Model.h */,
+				FE3700F81D35DA3A006AD222 /* NSObject+WHC_Model.m */,
 				849EB1521CE9A78500248AC4 /* JsonModel */,
 				849EB1511CE9A78500248AC4 /* Products */,
 			);
@@ -63,6 +66,8 @@
 			isa = PBXGroup;
 			children = (
 				849EB1531CE9A78500248AC4 /* main.m */,
+				FEF3ACB71D34EC7D00B7E299 /* TestModel.h */,
+				FEF3ACB81D34EC7D00B7E299 /* TestModel.m */,
 			);
 			path = JsonModel;
 			sourceTree = "<group>";
@@ -123,7 +128,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				849EB15C1CE9A79500248AC4 /* WHC_DataModel.m in Sources */,
+				FE3700F91D35DA3A006AD222 /* NSObject+WHC_Model.m in Sources */,
+				FEF3ACB91D34EC7D00B7E299 /* TestModel.m in Sources */,
 				849EB1541CE9A78500248AC4 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -245,6 +251,7 @@
 				849EB1591CE9A78500248AC4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
