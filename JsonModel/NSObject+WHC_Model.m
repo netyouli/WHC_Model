@@ -325,8 +325,8 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 
 + (id)handleDataModelEngine:(id)object calss:(Class)class classPrefix:(NSString *)prefix {
     if(object) {
-        id  modelObject = [class new];
         if([object isKindOfClass:[NSDictionary class]]){
+            id  modelObject = [class new];
             NSDictionary  * dict = object;
             NSInteger       count = dict.count;
             NSArray       * keyArr = [dict allKeys];
@@ -421,7 +421,6 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                     [modelObjectArr addObject:subModelObject];
                 }
             }
-            modelObject = nil;
             return modelObjectArr;
         }
     }
