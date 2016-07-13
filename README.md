@@ -49,10 +49,7 @@ NSDictionary *dict = @{
 };
 // JSON -> User
 User * user = [User modelWithDictionary:dict];
-
-NSLog(@"name=%@, icon=%@, age=%@, height=%@, money=%@, sex=%@",
-      user.name, user.icon, user.age, user.height, user.money, user.sex);
-// name=Jack, icon=lufy.png, age=20, height=1.550000, money=100.9, sex=1
+NSLog(@"user = %@",user);
 
 // User -> json
 NSLog(@"json = %@",[user json]);
@@ -88,100 +85,83 @@ NSDictionary *dict = @{
 
 // JSON -> Status
 Status *status = [Status modelWithDictionary:dict];
-
+NSLog(@"status = %@",status);
 // status -> json
 NSLog(@"json = %@",[status json]);
 
-NSString *text = status.text;
-NSString *name = status.user.name;
-NSString *icon = status.user.icon;
-NSLog(@"text=%@, name=%@, icon=%@", text, name, icon);
-// text=Agree!Nice weather!, name=Jack, icon=lufy.png
-
-NSString *text2 = status.status.text;
-NSString *name2 = status.status.user.name;
-NSString *icon2 = status.status.user.icon;
-NSLog(@"text2=%@, name2=%@, icon2=%@", text2, name2, icon2);
-// text2=Nice weather!, name2=Rose, icon2=nami.png
-// JSON -> User
-
 ```
-###Model contains model-array
+###WHC_Model Api文档
 
 ```Objective-C
 
-@interface Ad : NSObject
-@property (copy, nonatomic) NSString *image;
-@property (copy, nonatomic) NSString *url;
-@end
+###pragma mark - json转模型对象 Api -
 
-@interface StatusResult : NSObject
-/** Contatins status model */
-@property (strong, nonatomic) NSMutableArray *statuses;
-/** Contatins ad model */
-@property (strong, nonatomic) NSArray *ads;
-@property (strong, nonatomic) NSNumber *totalNumber;
-@end
+/** 说明: 把json数组解析为模型对象数组
+ *@param array:json数组
+ *@return 模型对象数组
+ */
++ (NSArray*)modelWithArray:(NSArray*)array;
 
-/***********************************************/
+/** 说明: 把json数组解析为模型对象数组
+ *@param array:json数组
+ *@return 模型对象数组
+ */
 
-// Tell MJExtension what type model will be contained in statuses and ads.
-[StatusResult setupObjectClassInArray:^NSDictionary *{
-return @{
-@"statuses" : @"Status",
-@"ads" : @"Ad"
-};
-}];
-// Equals: StatusResult.m implements +objectClassInArray method.
++ (NSArray*)modelWithArray:(NSArray*)array classPrefix:(NSString *)prefix;
 
-NSDictionary *dict = @{
-@"statuses" : @[
-@{
-@"text" : @"Nice weather!",
-@"user" : @{
-@"name" : @"Rose",
-@"icon" : @"nami.png"
-}
-},
-@{
-@"text" : @"Go camping tomorrow!",
-@"user" : @{
-@"name" : @"Jack",
-@"icon" : @"lufy.png"
-}
-}
-],
-@"ads" : @[
-@{
-@"image" : @"ad01.png",
-@"url" : @"http://www.ad01.com"
-},
-@{
-@"image" : @"ad02.png",
-@"url" : @"http://www.ad02.com"
-}
-],
-@"totalNumber" : @"2014"
-};
+/** 说明:把json字典解析为模型对象
+ *@param dictionary:json字典
+ *@param prefix: 自定义模型类前缀名称
+ *@return 模型对象
+ */
++ (id)modelWithDictionary:(NSDictionary*)dictionary;
 
-// JSON -> StatusResult
-StatusResult *result = [StatusResult modelWithDictionary:dict];
+/** 说明:把json字典解析为模型对象
+ *@param dictionary:json字典
+ *@param prefix: 自定义模型类前缀名称
+ *@return 模型对象
+ */
 
-NSLog(@"totalNumber=%@", result.totalNumber);
++ (id)modelWithDictionary:(NSDictionary*)dictionary classPrefix:(NSString *)prefix;
 
-// Printing
-for (Status *status in result.statuses) {
-    NSString *text = status.text;
-    NSString *name = status.user.name;
-    NSString *icon = status.user.icon;
-    NSLog(@"text=%@, name=%@, icon=%@", text, name, icon);
-}
-// text=Nice weather!, name=Rose, icon=nami.png
-// text=Go camping tomorrow!, name=Jack, icon=lufy.png
-// Printing
-for (Ad *ad in result.ads) {
-NSLog(@"image=%@, url=%@", ad.image, ad.url);
-}
-// image=ad01.png, url=http://www.ad01.com
-// image=ad02.png, url=http://www.ad02.com
+/** 说明:把json解析为模型对象
+ *@param json :json 字符串
+ *@return 模型对象
+ */
++ (id)modelWithJson:(NSString *)json;
+
+/** 说明:把json解析为模型对象
+ *@param json :json 字符串
+ *@param prefix: 自定义模型类前缀名称
+ *@return 模型对象
+ */
+
++ (id)modelWithJson:(NSString *)json classPrefix:(NSString *)prefix;
+
+/** 说明:把json解析为模型对象
+ *@param jsonData :jsonData json数据对象
+ *@return 模型对象
+ */
++ (id)modelWithJsonData:(NSData *)jsonData;
+
+/** 说明:把json解析为模型对象
+ *@param jsonData :jsonData json数据对象
+ *@param prefix: 自定义模型类前缀名称
+ *@return 模型对象
+ */
++ (id)modelWithJsonData:(NSData *)jsonData classPrefix:(NSString *)prefix;
+
+###pragma mark - 模型对象转json Api -
+
+/** 说明:把模型对象转换为字典
+ *@return 字典对象
+ */
+
+- (NSDictionary *)dictionary;
+
+/** 说明:把模型对象转换为json字符串
+ *@return json字符串
+ */
+
+- (NSString *)json;
 ```
