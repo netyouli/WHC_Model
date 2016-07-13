@@ -1,9 +1,11 @@
-# WHC_DataModel
-### WHC_DataModel 功能说明:
-#### 1.支持json到模型对象
-#### 2.支持模型对象到json的转换
-#### 3.同时支持json和模型对象的无限嵌套
-#### 4.解析效率高
+# WHC_Model
+### WHC_Model 功能说明:
+##### 1.支持json到模型对象
+##### 2.支持模型对象到json的转换
+##### 3.同时支持json和模型对象的无限嵌套
+#### 4.高效的解析转换算法
+#### 5.支持容错处理模型属性名称和json的key不区分大小写
+#### 6.支持自定义模型类前缀
 
 ###咨询qq:712641411
 ###作者：吴海超
@@ -46,11 +48,14 @@ NSDictionary *dict = @{
     @"sex" : @(SexFemale)
 };
 // JSON -> User
-User * user = [WHC_DataModel dataModelWithDictionary:dict className:[User class]];
+User * user = [User modelWithDictionary:dict];
 
 NSLog(@"name=%@, icon=%@, age=%@, height=%@, money=%@, sex=%@",
       user.name, user.icon, user.age, user.height, user.money, user.sex);
 // name=Jack, icon=lufy.png, age=20, height=1.550000, money=100.9, sex=1
+
+// User -> json
+NSLog(@"json = %@",[user json]);
 
 ```
 
@@ -82,7 +87,10 @@ NSDictionary *dict = @{
 };
 
 // JSON -> Status
-Status *status = [WHC_DataModel dataModelWithDictionary:dict className:[Status class]];
+Status *status = [Status modelWithDictionary:dict];
+
+// status -> json
+NSLog(@"json = %@",[status json]);
 
 NSString *text = status.text;
 NSString *name = status.user.name;
@@ -157,7 +165,7 @@ NSDictionary *dict = @{
 };
 
 // JSON -> StatusResult
-StatusResult *result = [WHC_DataModel dataModelWithDictionary:dict className:[StatusResult class]];
+StatusResult *result = [StatusResult modelWithDictionary:dict];
 
 NSLog(@"totalNumber=%@", result.totalNumber);
 
