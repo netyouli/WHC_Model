@@ -20,6 +20,9 @@
 @property (nonatomic , copy) NSString              * firstName;
 @property (nonatomic , copy) NSString              * email;
 @property (nonatomic , copy) NSString              * lastName;
+@property (nonatomic , assign) NSInteger            age;
+@property (nonatomic , assign) CGFloat              weight;
+@property (nonatomic , assign) BOOL                 isIos;
 
 @end
 
