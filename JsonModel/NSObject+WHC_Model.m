@@ -126,8 +126,15 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 #pragma mark - 模型对象转json Api -
 
 - (NSString *)json {
-    NSDictionary * jsonDictionary = [self dictionary];
-    NSData * jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:nil];
+    id jsonSet = nil;
+    if ([self isKindOfClass:NSDictionary.class]) {
+        jsonSet = [self parserDictionaryEngine:(NSDictionary *)self];
+    }else if([self isKindOfClass:NSArray.class]) {
+        jsonSet = [self parserArrayEngine:(NSArray *)self];
+    }else {
+        jsonSet = [self dictionary];
+    }
+    NSData * jsonData = [NSJSONSerialization dataWithJSONObject:jsonSet options:0 error:nil];
     return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
@@ -324,6 +331,14 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 }
 
 + (id)handleDataModelEngine:(id)object calss:(Class)class classPrefix:(NSString *)prefix {
+    if (prefix != nil && prefix.length != 0) {} else {
+        SEL prefixFunc = NSSelectorFromString(@"prefix");
+        if ([class respondsToSelector:prefixFunc]) {
+            IMP prefix_func = [class methodForSelector:prefixFunc];
+            NSString * (*func)(id, SEL) = (void *)prefix_func;
+            prefix = func(class, prefixFunc);
+        }
+    }
     if(object) {
         if([object isKindOfClass:[NSDictionary class]]){
             id  modelObject = [class new];
