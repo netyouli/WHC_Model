@@ -79,7 +79,6 @@ int main(int argc, const char * argv[]) {
         NSLog(@"========================================");
         /// 其他api接口就不一一演示请看WHC_Model api文档说明
         /// github文档：https://github.com/netyouli/WHC_DataModel
-        /// 如果结合本示例和WHC_Model api文档说明最后还是不会使用那么我建议你放弃做iOS开发。
     }
     return 0;
 }
