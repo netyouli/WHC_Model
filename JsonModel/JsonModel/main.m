@@ -22,6 +22,7 @@
 #import <Foundation/Foundation.h>
 #import "TestModel.h"
 #import "NSObject+WHC_Model.h"
+#import "JsonModel-Swift.h"
 
 @interface JS_TXT : NSObject
 @property (nonatomic, copy)NSString * test;
@@ -76,6 +77,14 @@ int main(int argc, const char * argv[]) {
         NSString * whcJson1 = [whc1 json];
         NSLog(@"whcJson = %@",whcJson1);
         
+        
+        NSString * arrayJson = @"{\"PolicyRuleIndexList\" : [\
+        7,\
+        8,\
+        9\
+        ]}";
+        SwiftModel * swiftModel = [SwiftModel modelWithJson:arrayJson];
+        NSLog(@"swiftModel = %@",swiftModel.policyRuleIndexList);
         NSLog(@"========================================");
         /// 其他api接口就不一一演示请看WHC_Model api文档说明
         /// github文档：https://github.com/netyouli/WHC_DataModel

@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// VERSION:(2.0)
+// VERSION:(2.2)
 
 #import "NSObject+WHC_Model.h"
 #import <objc/runtime.h>
@@ -87,14 +87,14 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
         if ([object isKindOfClass:[NSArray class]]) {
             [_array addObject:[self modelWithArray:object classPrefix:prefix]];
         }else {
-            [_array addObject:[self handleDataModelEngine:object calss:self classPrefix:prefix]];
+            [_array addObject:[self handleDataModelEngine:object class:self classPrefix:prefix]];
         }
     }
     return _array;
 }
 
 + (id)modelWithDictionary:(NSDictionary*)dictionary classPrefix:(NSString *)prefix {
-    id object = [self handleDataModelEngine:dictionary calss:self classPrefix:prefix];
+    id object = [self handleDataModelEngine:dictionary class:self classPrefix:prefix];
     return object;
 }
 
@@ -116,6 +116,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 }
 
 + (id)modelWithJsonData:(NSData *)jsonData classPrefix:(NSString *)prefix {
+    if (prefix == nil) prefix = kWHCKey;
     NSObject * object = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:nil];
     if ([object isKindOfClass:[NSArray class]]) {
         return [self modelWithArray:(NSArray *)object classPrefix:prefix];
@@ -127,9 +128,9 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 
 - (NSString *)json {
     id jsonSet = nil;
-    if ([self isKindOfClass:NSDictionary.class]) {
+    if ([self isKindOfClass:[NSDictionary class]]) {
         jsonSet = [self parserDictionaryEngine:(NSDictionary *)self];
-    }else if([self isKindOfClass:NSArray.class]) {
+    }else if ([self isKindOfClass:[NSArray class]]) {
         jsonSet = [self parserArrayEngine:(NSArray *)self];
     }else {
         jsonSet = [self dictionary];
@@ -330,7 +331,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
     return modelInfo;
 }
 
-+ (id)handleDataModelEngine:(id)object calss:(Class)class classPrefix:(NSString *)prefix {
++ (id)handleDataModelEngine:(id)object class:(Class)class classPrefix:(NSString *)prefix {
     if (prefix != nil && prefix.length != 0) {} else {
         SEL prefixFunc = NSSelectorFromString(@"prefix");
         if ([class respondsToSelector:prefixFunc]) {
@@ -359,7 +360,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                                 }else{
                                     NSString * className =  keyArr[i];
                                     Class subModelClass = NSClassFromString(className);
-                                    if (subModelClass == nil) {
+                                    if (subModelClass == nil || (prefix != nil && prefix.length > 0)) {
                                         NSString * first = [className substringToIndex:1];
                                         NSString * other = [className substringFromIndex:1];
                                         if (prefix.length > 0) {
@@ -375,9 +376,11 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                                         }
                                     }
                                     if (subModelClass) {
-                                        id subModelObject = [self handleDataModelEngine:subObject calss:subModelClass classPrefix:prefix];
+                                        id subModelObject = [self handleDataModelEngine:subObject class:subModelClass classPrefix:prefix];
                                         NSString * actualProperty = [self existproperty:keyArr[i] withObject:modelObject];
                                         [modelObject setValue:[subModelObject mutableCopy] forKey:actualProperty];
+                                    }else {
+                                        [modelObject setValue:[subObject mutableCopy] forKey:actualProperty];
                                     }
                                 }
                                 break;
@@ -385,7 +388,9 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                                 if([subObject isKindOfClass:[NSNull class]]){
                                     [modelObject setValue:@"" forKey:actualProperty];
                                 }else{
-                                    [modelObject setValue:subObject forKey:actualProperty];
+                                    if ([subObject isKindOfClass:[NSString class]]) {
+                                        [modelObject setValue:subObject forKey:actualProperty];
+                                    }
                                 }
                                 break;
                             case _Number:
@@ -414,7 +419,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                                 ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)modelObject, setter, [subObject charValue]);
                                 break;
                             case _Model: {
-                                id subModelObject = [self handleDataModelEngine:subObject calss:modelInfo.class classPrefix:prefix];
+                                id subModelObject = [self handleDataModelEngine:subObject class:modelInfo.class classPrefix:prefix];
                                 [modelObject setValue:subModelObject forKey:actualProperty];
                             }
                                 break;
@@ -431,7 +436,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
             NSInteger  count = objectArr.count;
             NSMutableArray  * modelObjectArr = [NSMutableArray new];
             for (NSInteger i = 0; i < count; i++) {
-                id subModelObject = [self handleDataModelEngine:objectArr[i] calss:class classPrefix:prefix];
+                id subModelObject = [self handleDataModelEngine:objectArr[i] class:class classPrefix:prefix];
                 if(subModelObject){
                     [modelObjectArr addObject:subModelObject];
                 }

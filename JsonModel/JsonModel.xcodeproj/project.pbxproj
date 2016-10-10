@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		849EB1541CE9A78500248AC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 849EB1531CE9A78500248AC4 /* main.m */; };
+		FE2940061DAB55310079EA5B /* SwiftModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE2940051DAB55310079EA5B /* SwiftModel.swift */; };
 		FE3700F91D35DA3A006AD222 /* NSObject+WHC_Model.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3700F81D35DA3A006AD222 /* NSObject+WHC_Model.m */; };
 		FEF3ACB91D34EC7D00B7E299 /* TestModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF3ACB81D34EC7D00B7E299 /* TestModel.m */; };
 /* End PBXBuildFile section */
@@ -27,6 +28,8 @@
 /* Begin PBXFileReference section */
 		849EB1501CE9A78500248AC4 /* JsonModel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = JsonModel; sourceTree = BUILT_PRODUCTS_DIR; };
 		849EB1531CE9A78500248AC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FE2940041DAB55300079EA5B /* JsonModel-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JsonModel-Bridging-Header.h"; sourceTree = "<group>"; };
+		FE2940051DAB55310079EA5B /* SwiftModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftModel.swift; sourceTree = "<group>"; };
 		FE3700F71D35DA3A006AD222 /* NSObject+WHC_Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+WHC_Model.h"; sourceTree = "<group>"; };
 		FE3700F81D35DA3A006AD222 /* NSObject+WHC_Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+WHC_Model.m"; sourceTree = "<group>"; };
 		FEF3ACB71D34EC7D00B7E299 /* TestModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestModel.h; sourceTree = "<group>"; };
@@ -68,6 +71,8 @@
 				849EB1531CE9A78500248AC4 /* main.m */,
 				FEF3ACB71D34EC7D00B7E299 /* TestModel.h */,
 				FEF3ACB81D34EC7D00B7E299 /* TestModel.m */,
+				FE2940051DAB55310079EA5B /* SwiftModel.swift */,
+				FE2940041DAB55300079EA5B /* JsonModel-Bridging-Header.h */,
 			);
 			path = JsonModel;
 			sourceTree = "<group>";
@@ -103,6 +108,7 @@
 				TargetAttributes = {
 					849EB14F1CE9A78500248AC4 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -129,6 +135,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE3700F91D35DA3A006AD222 /* NSObject+WHC_Model.m in Sources */,
+				FE2940061DAB55310079EA5B /* SwiftModel.swift in Sources */,
 				FEF3ACB91D34EC7D00B7E299 /* TestModel.m in Sources */,
 				849EB1541CE9A78500248AC4 /* main.m in Sources */,
 			);
@@ -221,14 +228,23 @@
 		849EB1581CE9A78500248AC4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "JsonModel/JsonModel-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		849EB1591CE9A78500248AC4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "JsonModel/JsonModel-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
