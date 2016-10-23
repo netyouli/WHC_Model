@@ -8,7 +8,15 @@
 
 import Cocoa
 
+@objc enum ENUM_SWIFT: Int {
+    case A
+    case B
+    case C
+    case D
+}
+
 @objc(SwiftModel)
 class SwiftModel: NSObject {
     var policyRuleIndexList: [Int]!
+    var em = ENUM_SWIFT.A
 }

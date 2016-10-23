@@ -47,8 +47,18 @@ int main(int argc, const char * argv[]) {
         // insert code here...
         
         
-        NSString * testJson = @"{ \"programmers\": [    { \"firstName\": \"Brett\", \"lastName\":\"McLaughlin\",\"email\": \"brett@newInstance.com\",\"age\":18,\"isIos\":true,\"weight\":140.0 },    { \"firstName\": \"Jason\", \"lastName\":\"Hunter\",\"email\": \"jason@servlets.com\",\"age\":18,\"isIos\":false,\"weight\":140.0 },    { \"firstName\": \"Elliotte\", \"lastName\":\"Harold\",\"email\": \"elharo@macfaq.com\",\"age\":18,\"isIos\":false,\"weight\":140.0 }   ],  \"authors\": [    { \"firstName\": \"Isaac\",\"lastName\": \"Asimov\", \"genre\": \"science fiction\" },    { \"firstName\": \"Tad\",\"lastName\": \"Williams\", \"genre\": \"fantasy\" },    { \"firstName\": \"Frank\",\"lastName\": \"Peretti\", \"genre\": \"christian fiction\" }   ],  \"musicians\": [{ \"firstName\": \"Eric\", \"lastName\": \"Clapton\", \"instrument\": \"guitar\" },{ \"firstName\": \"Sergei\", \"lastName\": \"Rachmaninoff\", \"instrument\": \"piano\" }   ]  }";
+        NSString * testJson = @"{\"enumType\":2,\"age\":25,\"name\":\"wuhaichao\", \"programmers\": [    { \"firstName\": \"Brett\", \"lastName\":\"McLaughlin\",\"email\": \"brett@newInstance.com\",\"age\":18,\"isIos\":true,\"weight\":140.0 },    { \"firstName\": \"Jason\", \"lastName\":\"Hunter\",\"email\": \"jason@servlets.com\",\"age\":18,\"isIos\":false,\"weight\":140.0 },    { \"firstName\": \"Elliotte\", \"lastName\":\"Harold\",\"email\": \"elharo@macfaq.com\",\"age\":18,\"isIos\":false,\"weight\":140.0 }   ],  \"authors\": [    { \"firstName\": \"Isaac\",\"lastName\": \"Asimov\", \"genre\": \"science fiction\" },    { \"firstName\": \"Tad\",\"lastName\": \"Williams\", \"genre\": \"fantasy\" },    { \"firstName\": \"Frank\",\"lastName\": \"Peretti\", \"genre\": \"christian fiction\" }   ],  \"musicians\": [{ \"firstName\": \"Eric\", \"lastName\": \"Clapton\", \"instrument\": \"guitar\" },{ \"firstName\": \"Sergei\", \"lastName\": \"Rachmaninoff\", \"instrument\": \"piano\" }   ]  }";
         
+
+        /// 解析json通过指定json里路径key来解析指定的节点json对象
+        NSArray        * programmers = [JS_Programmers modelWithJson:testJson keyPath:@"programmers"];
+        NSLog(@"programmers = %@",programmers);
+        
+        JS_Programmers * programmer = [JS_Programmers modelWithJson:testJson keyPath:@"programmers[0]"];
+        NSLog(@"programmer = %@",programmer);
+        
+        NSString       * firstName = [TestModel modelWithJson:testJson keyPath:@"programmers[0].firstName"];
+        NSLog(@"firstName = %@",firstName);
         //// json转model
         TestModel * model = [TestModel modelWithJson:testJson classPrefix:@"JS_"];
         
@@ -78,13 +88,14 @@ int main(int argc, const char * argv[]) {
         NSLog(@"whcJson = %@",whcJson1);
         
         
-        NSString * arrayJson = @"{\"PolicyRuleIndexList\" : [\
+        NSString * arrayJson = @"{\"em\":2,\"PolicyRuleIndexList\" : [\
         7,\
         8,\
         9\
         ]}";
+        
         SwiftModel * swiftModel = [SwiftModel modelWithJson:arrayJson];
-        NSLog(@"swiftModel = %@",swiftModel.policyRuleIndexList);
+        NSLog(@"em = %ld,swiftModel = %@",(long)swiftModel.em,swiftModel.policyRuleIndexList);
         NSLog(@"========================================");
         /// 其他api接口就不一一演示请看WHC_Model api文档说明
         /// github文档：https://github.com/netyouli/WHC_DataModel

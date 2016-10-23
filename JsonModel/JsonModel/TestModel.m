@@ -8,6 +8,9 @@
 
 #import "TestModel.h"
 
+@implementation OtherObject
+
+@end
 @implementation TestModel
 
 @end

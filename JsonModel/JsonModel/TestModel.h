@@ -8,6 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum : NSUInteger {
+    a = 1,
+    b = 2,
+    c = 3,
+} ENUM_TYPE;
+
+@interface OtherObject : NSObject
+@property (nonatomic, copy) NSString * name;
+@property (nonatomic, assign) NSInteger age;
+@property (nonatomic, assign)ENUM_TYPE enumType;
+@end
 
 @interface JS_Authors :NSObject
 @property (nonatomic , copy) NSString              * firstName;
@@ -33,7 +44,7 @@
 
 @end
 
-@interface TestModel :NSObject
+@interface TestModel :OtherObject
 @property (nonatomic , strong) NSArray              * authors;
 @property (nonatomic , strong) NSArray              * programmers;
 @property (nonatomic , strong) NSArray              * musicians;

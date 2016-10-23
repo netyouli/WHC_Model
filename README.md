@@ -1,24 +1,17 @@
 # WHC_Model
-### WHC_Model 功能说明:
-##### 1.支持json到模型对象
-##### 2.支持模型对象到json的转换
-##### 3.同时支持json和模型对象的无限嵌套
-#### 4.高效的解析转换算法
-#### 5.支持容错处理模型属性名称和json的key不区分大小写
-#### 6.支持自定义模型类前缀
+简介
+==============
+- **高效**: 深度递归高效解析算法
+- **继承**: 支持model类继承其他model类
+- **安全**: 自动处理json中的null
+- **优势**: 高容错能力(model类属性名称和json里key名称不区分大小写)
+- **强大**: 支持自定义model类前缀(避免相同类名导致编译冲突错误)
+- **特性**: 支持反射指定json路径key来解析指定的节点json对象
+- **嵌套**: 支持json或者model类的无限嵌套,json->model ,model->json的转换
+- **强悍**: 只需要两个文件(500来行代码)
 
-###咨询qq:712641411
-###作者：吴海超
-
-
-###这个配合WHC_DataModelFactory mac工具使用将让你体验超神的感觉：github地址：https://github.com/netyouli/WHC_DataModelFactory
-####JSON --> Model、Core Data Model
-####JSONString --> Model、Core Data Model
-####Model、Core Data Model --> JSON
-####JSON Array --> Model Array、Core Data Model Array
-####JSONString --> Model Array、Core Data Model Array
-####Model Array、Core Data Model Array --> JSON Array
-
+用法
+==============
 ```Objective-C
 typedef enum {
     SexMale,
@@ -52,6 +45,10 @@ NSLog(@"user = %@",user);
 // User -> json
 NSLog(@"json = %@",[user json]);
 
+// User -> Dictionary
+NSLog(@"json = %@",[user dictionary]);
+
+
 ```
 
 
@@ -67,18 +64,18 @@ NSLog(@"json = %@",[user json]);
 /***********************************************/
 
 NSDictionary *dict = @{
-@"text" : @"Agree!Nice weather!",
-@"user" : @{
-@"name" : @"Jack",
-@"icon" : @"lufy.png"
-},
-@"retweetedStatus" : @{
-@"text" : @"Nice weather!",
-@"user" : @{
-@"name" : @"Rose",
-@"icon" : @"nami.png"
-}
-}
+    @"text" : @"Agree!Nice weather!",
+    @"user" : @{
+        @"name" : @"Jack",
+        @"icon" : @"lufy.png"
+    },
+    @"retweetedStatus" : @{
+        @"text" : @"Nice weather!",
+        @"user" : @{
+            @"name" : @"Rose",
+            @"icon" : @"nami.png"
+        }
+    }
 };
 
 // JSON -> Status
@@ -88,6 +85,21 @@ NSLog(@"status = %@",status);
 NSLog(@"json = %@",[status json]);
 
 ```
+指定json的key路径例子具体请参考提供demo
+==============
+```Objective-C
+/// 解析json通过指定json里路径key来解析指定的节点json对象
+NSArray        * programmers = [JS_Programmers modelWithJson:testJson keyPath:@"programmers"];
+NSLog(@"programmers = %@",programmers);
+JS_Programmers * programmer = [JS_Programmers modelWithJson:testJson keyPath:@"programmers[0]"];
+NSLog(@"programmer = %@",programmer);
+NSString       * firstName = [TestModel modelWithJson:testJson keyPath:@"programmers[0].firstName"];
+NSLog(@"firstName = %@",firstName);
+```
+
+###咨询qq:712641411
+###作者：吴海超
+###配合WHC_DataModelFactory mac工具使用将彻底解放你双手：github地址：https://github.com/netyouli/WHC_DataModelFactory
 ###WHC_Model Api文档
 
 ```Objective-C
@@ -147,6 +159,21 @@ NSLog(@"json = %@",[status json]);
  *@param prefix: 自定义模型类前缀名称
  *@return 模型对象
  */
++ (id)modelWithJsonData:(NSData *)jsonData classPrefix:(NSString *)prefix;
+
+/** 说明:把json解析为模型对象
+*@param jsonData :jsonData json数据对象
+*@param keyPath: json key的路径
+*@return 模型对象
+*/
+
++ (id)modelWithJsonData:(NSData *)jsonData keyPath:(NSString *)keyPath;
+
+/** 说明:把json解析为模型对象
+*@param jsonData :jsonData json数据对象
+*@param prefix: 自定义模型类前缀名称
+*@return 模型对象
+*/
 + (id)modelWithJsonData:(NSData *)jsonData classPrefix:(NSString *)prefix;
 
 ###pragma mark - 模型对象转json Api -

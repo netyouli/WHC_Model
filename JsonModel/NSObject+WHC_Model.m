@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// VERSION:(2.2)
+// VERSION:(2.5)
 
 #import "NSObject+WHC_Model.h"
 #import <objc/runtime.h>
@@ -42,7 +42,8 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
     _Char = 1 << 8,
     _Number = 1 << 9,
     _Null = 1 << 10,
-    _Model = 1 << 11
+    _Model = 1 << 11,
+    _Data = 1 << 12
 };
 
 @interface WHC_ModelInfo : NSObject
@@ -54,9 +55,10 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 - (void)setClass:(Class)class {
     _class = class;
     if (class == [NSDictionary class]) {_type = _Dictionary;}
-    else if (class == [NSArray class]) {_type = _Array;}
     else if (class == [NSString class]) {_type = _String;}
+    else if (class == [NSArray class]) {_type = _Array;}
     else if (class == [NSNumber class]) {_type = _Number;}
+    else if (class == [NSData class]) {_type = _Data;}
     else { _type = _Model;}
 }
 
@@ -124,6 +126,52 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
     return [self modelWithDictionary:(NSDictionary *)object classPrefix:prefix];
 }
 
++ (id)modelWithJsonData:(NSData *)jsonData keyPath:(NSString *)keyPath {
+    if (keyPath != nil && keyPath.length > 0) {
+        __block id jsonObject = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:nil];
+        NSArray<NSString *> * keyPathArray = [keyPath componentsSeparatedByString:@"."];
+        [keyPathArray enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSRange range = [key rangeOfString:@"["];
+            if (range.location != NSNotFound) {
+                NSString * realKey = [key substringToIndex:range.location];
+                jsonObject = jsonObject[realKey];
+                if (jsonObject != nil) {
+                    NSString * indexString = [key substringFromIndex:range.location];
+                    NSString * handleIndexString = [indexString stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"[]"]];
+                    NSInteger indexLength = handleIndexString.length;
+                    for (NSUInteger i = 0; i < indexLength; i++) {
+                        NSInteger index = [[handleIndexString substringWithRange:NSMakeRange(i, 1)] integerValue];
+                        jsonObject = jsonObject[index];
+                    }
+                }
+            }else {
+                jsonObject = jsonObject[key];
+            }
+        }];
+        if (jsonObject) {
+            if ([jsonObject isKindOfClass:[NSDictionary class]]) {
+                return [self modelWithDictionary:jsonObject];
+            }else if ([jsonObject isKindOfClass:[NSArray class]]) {
+                return [self modelWithArray:jsonObject];
+            }else {
+                return jsonObject;
+            }
+        }
+        return nil;
+    }else {
+        return [self modelWithJsonData:jsonData];
+    }
+}
+
++ (id)modelWithJson:(NSString *)json keyPath:(NSString *)keyPath {
+    if (keyPath != nil && keyPath.length > 0) {
+        NSData * jsonData = [json dataUsingEncoding:NSUTF8StringEncoding];
+        return [self modelWithJsonData:jsonData keyPath:keyPath];
+    }else {
+        return [self modelWithJson:json];
+    }
+}
+
 #pragma mark - 模型对象转json Api -
 
 - (NSString *)json {
@@ -141,6 +189,19 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 
 - (NSDictionary *)dictionary {
     NSMutableDictionary * jsonDictionary = [NSMutableDictionary dictionary];
+    if (self.superclass != nil &&
+        ![NSStringFromClass(self.superclass) isEqualToString:@"NSObject"]) {
+        NSObject * superObject = self.superclass.new;
+        unsigned int propertyCount = 0;
+        objc_property_t * properties = class_copyPropertyList(self.superclass, &propertyCount);
+        for (unsigned int i = 0; i < propertyCount; i++) {
+            objc_property_t property = properties[i];
+            const char * name = property_getName(property);
+            NSString * propertyName = [NSString stringWithUTF8String:name];
+            [superObject setValue:[self valueForKey:propertyName] forKey:propertyName];
+        }
+        [jsonDictionary setDictionary:[superObject dictionary]];
+    }
     unsigned int propertyCount = 0;
     objc_property_t * properties = class_copyPropertyList([self class], &propertyCount);
     for (unsigned int i = 0; i < propertyCount; i++) {
@@ -245,11 +306,18 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
         if (class == [NSArray class]) return _Array;
         if (class == [NSString class]) return _String;
         if (class == [NSNumber class]) return _Number;
+        if (class == [NSData class]) return _Data;
     }
     return _Null;
 }
 
 + (NSString *)existproperty:(NSString *)property withObject:(NSObject *)object {
+    if (object.superclass && ![NSStringFromClass(object.superclass) isEqualToString:@"NSObject"]) {
+        NSString * name =  [self existproperty:property withObject:object.superclass.new];
+        if (name != nil && name.length > 0) {
+            return name;
+        }
+    }
     unsigned int  propertyCount = 0;
     objc_property_t *properties = class_copyPropertyList([object class], &propertyCount);
     for (unsigned int i = 0; i < propertyCount; ++i) {
@@ -304,9 +372,14 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 }
 
 + (WHC_ModelInfo *)classExistProperty:(NSString *)property withObject:(NSObject *)object {
-    WHC_ModelInfo * modelInfo = [WHC_ModelInfo new];
+    if (object.superclass && ![NSStringFromClass(object.superclass) isEqualToString:@"NSObject"]) {
+        WHC_ModelInfo * modelInfo = [self classExistProperty:property withObject:object.superclass.new];
+        if (modelInfo != nil) {
+            return modelInfo;
+        }
+    }
+    WHC_ModelInfo * modelInfo = nil;
     if (property != nil && property.length > 0) {
-        modelInfo.type = _Model;
         unsigned int  propertyCount = 0;
         objc_property_t *properties = class_copyPropertyList([object class], &propertyCount);
         for (unsigned int i = 0; i < propertyCount; ++i) {
@@ -318,6 +391,8 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                 NSString * attr = [NSString stringWithUTF8String:attributes];
                 NSArray * arrayString = [attr componentsSeparatedByString:@"\""];
                 free(properties);
+                [self getTypeProperty:attributes];
+                modelInfo = [WHC_ModelInfo new];
                 if (arrayString.count == 1) {
                     modelInfo.type = [self parserTypeWithAttr:arrayString[0]];
                 }else {
@@ -353,6 +428,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                     SEL setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[actualProperty substringToIndex:1].uppercaseString, [actualProperty substringFromIndex:1]]);
                     if (actualProperty != nil) {
                         WHC_ModelInfo * modelInfo = [self classExistProperty:keyArr[i] withObject:modelObject];
+                        if (modelInfo == nil) continue;
                         switch (modelInfo.type) {
                             case _Array:
                                 if([subObject isKindOfClass:[NSNull class]]){
@@ -388,9 +464,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                                 if([subObject isKindOfClass:[NSNull class]]){
                                     [modelObject setValue:@"" forKey:actualProperty];
                                 }else{
-                                    if ([subObject isKindOfClass:[NSString class]]) {
-                                        [modelObject setValue:subObject forKey:actualProperty];
-                                    }
+                                    [modelObject setValue:subObject forKey:actualProperty];
                                 }
                                 break;
                             case _Number:
@@ -410,7 +484,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                                 ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)modelObject, setter, [subObject boolValue]);
                                 break;
                             case _Float:
-                                ((void (*)(id, SEL, CGFloat))(void *) objc_msgSend)((id)modelObject, setter, [subObject floatValue]);
+                                ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)modelObject, setter, [subObject floatValue]);
                                 break;
                             case _Double:
                                 ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)modelObject, setter, [subObject doubleValue]);
@@ -423,6 +497,12 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                                 [modelObject setValue:subModelObject forKey:actualProperty];
                             }
                                 break;
+                            case _Data: {
+                                if(![subObject isKindOfClass:[NSNull class]]){
+                                    [modelObject setValue:subObject forKey:actualProperty];
+                                }
+                                break;
+                            }
                             default:
                                 
                                 break;

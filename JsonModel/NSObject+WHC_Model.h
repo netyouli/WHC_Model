@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// VERSION:(2.2)
+// VERSION:(2.5)
 #import <Foundation/Foundation.h>
 
 @interface NSObject (WHC_Model)
@@ -59,10 +59,16 @@
 
 /** 说明:把json解析为模型对象
  *@param json :json 字符串
- *@param prefix: 自定义模型类前缀名称
  *@return 模型对象
  */
 + (id)modelWithJson:(NSString *)json;
+
+/** 说明:把json解析为模型对象
+ *@param json :json 字符串
+ *@param keyPath: json key的路径
+ *@return 模型对象
+ */
++ (id)modelWithJson:(NSString *)json keyPath:(NSString *)keyPath;
 
 /** 说明:把json解析为模型对象
  *@param json :json 字符串
@@ -77,6 +83,14 @@
  *@return 模型对象
  */
 + (id)modelWithJsonData:(NSData *)jsonData;
+
+/** 说明:把json解析为模型对象
+ *@param jsonData :jsonData json数据对象
+ *@param keyPath: json key的路径
+ *@return 模型对象
+ */
+
++ (id)modelWithJsonData:(NSData *)jsonData keyPath:(NSString *)keyPath;
 
 /** 说明:把json解析为模型对象
  *@param jsonData :jsonData json数据对象
