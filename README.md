@@ -9,6 +9,9 @@
 - **特性**: 支持反射指定json路径key来解析指定的节点json对象
 - **嵌套**: 支持json或者model类的无限嵌套,json->model ,model->json的转换
 - **强悍**: 只需要两个文件(500来行代码)
+- **咨询**: 712641411
+- **作者**: 吴海超
+
 
 用法
 ==============
@@ -28,7 +31,6 @@ typedef enum {
 @end
 
 /***********************************************/
-
 
 NSDictionary *dict = @{
     @"name" : @"Jack",
@@ -52,7 +54,8 @@ NSLog(@"json = %@",[user dictionary]);
 ```
 
 
-###Model contains model
+Model contains model
+====================
 
 ```Objective-C
 @interface Status : NSObject
@@ -97,11 +100,12 @@ NSString       * firstName = [TestModel modelWithJson:testJson keyPath:@"program
 NSLog(@"firstName = %@",firstName);
 ```
 
-###咨询qq:712641411
-###作者：吴海超
-###配合WHC_DataModelFactory mac工具使用将彻底解放你双手：github地址：https://github.com/netyouli/WHC_DataModelFactory
-###WHC_Model Api文档
+推荐
+==============
+- WHC_DataModelFactory mac工具github地址：https://github.com/netyouli/WHC_DataModelFactory
 
+Api文档
+==============
 ```Objective-C
 
 ###pragma mark - json转模型对象 Api -
@@ -190,3 +194,11 @@ NSLog(@"firstName = %@",firstName);
 
 - (NSString *)json;
 ```
+## <a id="期待"></a>期待
+
+- 如果您在使用过程中有任何问题，欢迎issue me! 很乐意为您解答任何相关问题!
+- 与其给我点star，不如向我狠狠地抛来一个BUG！
+- 如果您想要更多的接口来自定义或者建议/意见，欢迎issue me！我会根据大家的需求提供更多的接口！
+
+## Licenses
+All source code is licensed under the MIT License.
