@@ -24,31 +24,31 @@
 
 ```
 
-###model -> json
+###1.model -> json
 ```Objective-C
     NSString * modelString = [model json];
     NSLog(@"modelString = %@\n\n\n",modelString);
 ```
 
-###model - > NSDictionary
+###2.model - > NSDictionary
 ```Objective-C
     NSDictionary * modelDict = [model dictionary];
     NSLog(@"modelDict = %@\n\n\n",modelDict);
 ```
 
-###指定路径只解析Head对象
+###3.指定路径只解析Head对象
 ```Objective-C
     Head * head = [Head modelWithJson:jsonString keyPath:@"Head"];
     NSLog(@"head = %@\n\n\n",head);
 ```
 
-###指定路径只解析ResponseBody对象
+###4.指定路径只解析ResponseBody对象
 ```Objective-C
     ResponseBody * body = [ResponseBody modelWithJson:jsonString keyPath:@"ResponseBody"];
     NSLog(@"ResponseBody = %@\n\n\n",body);
 ```
 
-###指定路径只解析PolicyRuleList集合中第一个对象
+###5.指定路径只解析PolicyRuleList集合中第一个对象
 ```Objective-C
     PolicyRuleList * rule = [PolicyRuleList modelWithJson:jsonString keyPath:@"ResponseBody.PolicyRuleList[0]"];
     NSLog(@"rule = %@\n\n\n",rule);
