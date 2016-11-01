@@ -15,89 +15,43 @@
 
 用法
 ==============
+
+json -> modelObject
 ```Objective-C
-typedef enum {
-    SexMale,
-    SexFemale
-} Sex;
-
-@interface User : NSObject
-@property (copy, nonatomic) NSString *name;
-@property (copy, nonatomic) NSString *icon;
-@property (strong, nonatomic) NSNumber * age;
-@property (strong, nonatomic) NSNumber * height;
-@property (strong, nonatomic) NSNumber *money;
-@property (strong, nonatomic) Sex  *sex;
-@end
-
-/***********************************************/
-
-NSDictionary *dict = @{
-    @"name" : @"Jack",
-    @"icon" : @"lufy.png",
-    @"age" : @20,
-    @"height" : @"1.55",
-    @"money" : @100.9,
-    @"sex" : @(SexFemale)
-};
-// JSON -> User
-User * user = [User modelWithDictionary:dict];
-NSLog(@"user = %@",user);
-
-// User -> json
-NSLog(@"json = %@",[user json]);
-
-// User -> Dictionary
-NSLog(@"json = %@",[user dictionary]);
-
+/// jsonString 是一个比较复杂3000行的json文件，具体参考demo
+    ModelObject * model = [ModelObject modelWithJson:jsonString];
+    NSLog(@"model = %@\n\n\n",model);
 
 ```
 
-
-Model contains model
-====================
-
+modelObject -> json
 ```Objective-C
-@interface Status : NSObject
-@property (copy, nonatomic) NSString *text;
-@property (strong, nonatomic) User *user;
-@property (strong, nonatomic) Status *status;
-@end
-
-/***********************************************/
-
-NSDictionary *dict = @{
-    @"text" : @"Agree!Nice weather!",
-    @"user" : @{
-        @"name" : @"Jack",
-        @"icon" : @"lufy.png"
-    },
-    @"retweetedStatus" : @{
-        @"text" : @"Nice weather!",
-        @"user" : @{
-            @"name" : @"Rose",
-            @"icon" : @"nami.png"
-        }
-    }
-};
-
-// JSON -> Status
-Status *status = [Status modelWithDictionary:dict];
-NSLog(@"status = %@",status);
-// status -> json
-NSLog(@"json = %@",[status json]);
-
+    NSString * modelString = [model json];
+    NSLog(@"modelString = %@\n\n\n",modelString);
 ```
-指定json的key路径例子具体请参考提供demo
-==============
+
+modelObject - > NSDictionary
 ```Objective-C
-/// 解析json通过指定json里路径key来解析指定的节点json对象
-NSArray        * programmers = [JS_Programmers modelWithJson:testJson keyPath:@"programmers"];
-NSLog(@"programmers = %@",programmers);
-JS_Programmers * programmer = [JS_Programmers modelWithJson:testJson keyPath:@"programmers[0]"];
-NSLog(@"programmer = %@",programmer);
-NSString       * firstName = [TestModel modelWithJson:testJson keyPath:@"programmers[0].firstName"];
-NSLog(@"firstName = %@",firstName);
+    NSDictionary * modelDict = [model dictionary];
+    NSLog(@"modelDict = %@\n\n\n",modelDict);
+```
+
+指定路径只解析Head对象
+```Objective-C
+    Head * head = [Head modelWithJson:jsonString keyPath:@"Head"];
+    NSLog(@"head = %@\n\n\n",head);
+```
+
+指定路径只解析ResponseBody对象
+```Objective-C
+    ResponseBody * body = [ResponseBody modelWithJson:jsonString keyPath:@"ResponseBody"];
+    NSLog(@"ResponseBody = %@\n\n\n",body);
+```
+
+指定路径只解析PolicyRuleList集合中第一个对象
+```Objective-C
+    PolicyRuleList * rule = [PolicyRuleList modelWithJson:jsonString keyPath:@"ResponseBody.PolicyRuleList[0]"];
+    NSLog(@"rule = %@\n\n\n",rule);
 ```
 
 推荐
