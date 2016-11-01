@@ -1,4 +1,9 @@
-# WHC_Model
+WHC_Model
+==============
+![Build Status](https://api.travis-ci.org/netyouli/WHC_Model.svg?branch=master)
+[![Pod Version](http://img.shields.io/cocoapods/v/WHC_Model.svg?style=flat)](http://cocoadocs.org/docsets/WHC_Model/)
+[![Pod Platform](http://img.shields.io/cocoapods/p/WHC_Model.svg?style=flat)](http://cocoadocs.org/docsets/WHC_Model/)
+[![Pod License](http://img.shields.io/cocoapods/l/WHC_Model.svg?style=flat)](https://opensource.org/licenses/MIT)
 简介
 ==============
 - **高效**: 深度递归高效解析算法
@@ -12,6 +17,17 @@
 - **咨询**: 712641411
 - **作者**: 吴海超
 
+要求
+==============
+* iOS 6.0 or later
+* Xcode 8.0 or later
+
+集成
+==============
+* 使用CocoaPods:
+  -  pod 'WHC_Model', '~> 1.0.0'
+* 手工集成:
+  -  导入文件夹WHC_ModelKit
 
 用法
 ==============
