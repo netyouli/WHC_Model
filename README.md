@@ -20,8 +20,10 @@ WHC_Model
 性能测试
 ==============
 Time lost (Benchmark 1000 times)
+
 ![](https://github.com/netyouli/WHC_Model/tree/master/Result/b.png)
 ![](https://github.com/netyouli/WHC_Model/tree/master/Result/a.png)
+* 查看性能测试功能： Benchmark/ModelBenchmark.xcodeproj 
 
 要求
 ==============
