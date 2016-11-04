@@ -23,12 +23,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// VERSION:(1.0.0)
+// VERSION:(1.1.0)
 
 #import "NSObject+WHC_Model.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
 #define kWHCKey    (@"")
+
+static NSMutableDictionary * modelInfo;
 
 typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
     _Array = 1 << 0,
@@ -54,8 +56,8 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 
 - (void)setClass:(Class)class {
     _class = class;
-    if (class == [NSDictionary class]) {_type = _Dictionary;}
-    else if (class == [NSString class]) {_type = _String;}
+    if (class == [NSString class]) {_type = _String;}
+    else if (class == [NSDictionary class]) {_type = _Dictionary;}
     else if (class == [NSArray class]) {_type = _Array;}
     else if (class == [NSNumber class]) {_type = _Number;}
     else if (class == [NSData class]) {_type = _Data;}
@@ -73,21 +75,22 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 @end
 
 @implementation NSObject (WHC_Model)
+
 #pragma mark - json转模型对象 Api -
-+ (NSArray *)modelWithArrayData:(NSData *)data {
-    NSArray * array = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-    return [self modelWithArray:array];
++ (NSArray *)whc_ModelWithArrayData:(NSData *)data {
+    NSArray * array = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+    return [self whc_ModelWithArray:array];
 }
 
-+ (NSArray *)modelWithArray:(NSArray*)array {
-    return [self modelWithArray:array classPrefix:kWHCKey];
++ (NSArray *)whc_ModelWithArray:(NSArray*)array {
+    return [self whc_ModelWithArray:array classPrefix:kWHCKey];
 }
 
-+ (NSArray*)modelWithArray:(NSArray*)array classPrefix:(NSString *)prefix {
++ (NSArray*)whc_ModelWithArray:(NSArray*)array classPrefix:(NSString *)prefix {
     NSMutableArray * _array = [NSMutableArray new];
     for (id object in array) {
         if ([object isKindOfClass:[NSArray class]]) {
-            [_array addObject:[self modelWithArray:object classPrefix:prefix]];
+            [_array addObject:[self whc_ModelWithArray:object classPrefix:prefix]];
         }else {
             [_array addObject:[self handleDataModelEngine:object class:self classPrefix:prefix]];
         }
@@ -95,40 +98,40 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
     return _array;
 }
 
-+ (id)modelWithDictionary:(NSDictionary*)dictionary classPrefix:(NSString *)prefix {
++ (id)whc_ModelWithDictionary:(NSDictionary*)dictionary classPrefix:(NSString *)prefix {
     id object = [self handleDataModelEngine:dictionary class:self classPrefix:prefix];
     return object;
 }
 
-+ (id)modelWithDictionary:(NSDictionary*)dictionary {
-    return [self modelWithDictionary:dictionary classPrefix:kWHCKey];
++ (id)whc_ModelWithDictionary:(NSDictionary*)dictionary {
+    return [self whc_ModelWithDictionary:dictionary classPrefix:kWHCKey];
 }
 
-+ (id)modelWithJson:(NSString *)json {
-    return [self modelWithJson:json classPrefix:kWHCKey];
++ (id)whc_ModelWithJson:(NSString *)json {
+    return [self whc_ModelWithJson:json classPrefix:kWHCKey];
 }
 
-+ (id)modelWithJson:(NSString *)json classPrefix:(NSString *)prefix {
++ (id)whc_ModelWithJson:(NSString *)json classPrefix:(NSString *)prefix {
     NSData * jsonData = [json dataUsingEncoding:NSUTF8StringEncoding];
-    return [self modelWithJsonData:jsonData classPrefix:prefix];
+    return [self whc_ModelWithJsonData:jsonData classPrefix:prefix];
 }
 
-+ (id)modelWithJsonData:(NSData *)data {
-    return [self modelWithJsonData:data classPrefix:kWHCKey];
++ (id)whc_ModelWithJsonData:(NSData *)data {
+    return [self whc_ModelWithJsonData:data classPrefix:kWHCKey];
 }
 
-+ (id)modelWithJsonData:(NSData *)jsonData classPrefix:(NSString *)prefix {
++ (id)whc_ModelWithJsonData:(NSData *)jsonData classPrefix:(NSString *)prefix {
     if (prefix == nil) prefix = kWHCKey;
-    NSObject * object = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:nil];
+    NSObject * object = [NSJSONSerialization JSONObjectWithData:jsonData options:kNilOptions error:nil];
     if ([object isKindOfClass:[NSArray class]]) {
-        return [self modelWithArray:(NSArray *)object classPrefix:prefix];
+        return [self whc_ModelWithArray:(NSArray *)object classPrefix:prefix];
     }
-    return [self modelWithDictionary:(NSDictionary *)object classPrefix:prefix];
+    return [self whc_ModelWithDictionary:(NSDictionary *)object classPrefix:prefix];
 }
 
-+ (id)modelWithJsonData:(NSData *)jsonData keyPath:(NSString *)keyPath {
++ (id)whc_ModelWithJsonData:(NSData *)jsonData keyPath:(NSString *)keyPath {
     if (keyPath != nil && keyPath.length > 0) {
-        __block id jsonObject = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:nil];
+        __block id jsonObject = [NSJSONSerialization JSONObjectWithData:jsonData options:kNilOptions error:nil];
         NSArray<NSString *> * keyPathArray = [keyPath componentsSeparatedByString:@"."];
         [keyPathArray enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
             NSRange range = [key rangeOfString:@"["];
@@ -150,47 +153,47 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
         }];
         if (jsonObject) {
             if ([jsonObject isKindOfClass:[NSDictionary class]]) {
-                return [self modelWithDictionary:jsonObject];
+                return [self whc_ModelWithDictionary:jsonObject];
             }else if ([jsonObject isKindOfClass:[NSArray class]]) {
-                return [self modelWithArray:jsonObject];
+                return [self whc_ModelWithArray:jsonObject];
             }else {
                 return jsonObject;
             }
         }
         return nil;
     }else {
-        return [self modelWithJsonData:jsonData];
+        return [self whc_ModelWithJsonData:jsonData];
     }
 }
 
-+ (id)modelWithJson:(NSString *)json keyPath:(NSString *)keyPath {
++ (id)whc_ModelWithJson:(NSString *)json keyPath:(NSString *)keyPath {
     if (keyPath != nil && keyPath.length > 0) {
         NSData * jsonData = [json dataUsingEncoding:NSUTF8StringEncoding];
-        return [self modelWithJsonData:jsonData keyPath:keyPath];
+        return [self whc_ModelWithJsonData:jsonData keyPath:keyPath];
     }else {
-        return [self modelWithJson:json];
+        return [self whc_ModelWithJson:json];
     }
 }
 
 #pragma mark - 模型对象转json Api -
 
-- (NSString *)json {
+- (NSString *)whc_Json {
     id jsonSet = nil;
     if ([self isKindOfClass:[NSDictionary class]]) {
         jsonSet = [self parserDictionaryEngine:(NSDictionary *)self];
     }else if ([self isKindOfClass:[NSArray class]]) {
         jsonSet = [self parserArrayEngine:(NSArray *)self];
     }else {
-        jsonSet = [self dictionary];
+        jsonSet = [self whc_Dictionary];
     }
     NSData * jsonData = [NSJSONSerialization dataWithJSONObject:jsonSet options:0 error:nil];
     return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
-- (NSDictionary *)dictionary {
+- (NSDictionary *)whc_Dictionary {
     NSMutableDictionary * jsonDictionary = [NSMutableDictionary dictionary];
     if (self.superclass != nil &&
-        ![NSStringFromClass(self.superclass) isEqualToString:@"NSObject"]) {
+        self.superclass != [NSObject class]) {
         NSObject * superObject = self.superclass.new;
         unsigned int propertyCount = 0;
         objc_property_t * properties = class_copyPropertyList(self.superclass, &propertyCount);
@@ -200,7 +203,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
             NSString * propertyName = [NSString stringWithUTF8String:name];
             [superObject setValue:[self valueForKey:propertyName] forKey:propertyName];
         }
-        [jsonDictionary setDictionary:[superObject dictionary]];
+        [jsonDictionary setDictionary:[superObject whc_Dictionary]];
     }
     unsigned int propertyCount = 0;
     objc_property_t * properties = class_copyPropertyList([self class], &propertyCount);
@@ -247,7 +250,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                 if (value == nil) {
                     value = [classType new];
                 }
-                [jsonDictionary setObject:[value dictionary] forKey:propertyName];
+                [jsonDictionary setObject:[value whc_Dictionary] forKey:propertyName];
             }
         }
     }
@@ -270,7 +273,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
         }else if ([subValue isKindOfClass:[NSArray class]]) {
             [subJsonDictionary setObject:[self parserArrayEngine:subValue] forKey:key];
         }else {
-            [subJsonDictionary setObject:[subValue dictionary] forKey:key];
+            [subJsonDictionary setObject:[subValue whc_Dictionary] forKey:key];
         }
     }
     return subJsonDictionary;
@@ -287,13 +290,33 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
         }else if ([subValue isKindOfClass:[NSArray class]]) {
             [subJsonArray addObject:[self parserArrayEngine:subValue]];
         }else {
-            [subJsonArray addObject:[subValue dictionary]];
+            [subJsonArray addObject:[subValue whc_Dictionary]];
         }
     }
     return subJsonArray;
 }
 
 #pragma mark - json转模型对象解析引擎(private) -
+
+static const char  WHC_ModelInfokey = '\0';
+
++ (WHC_ModelInfo *)getModelInfo:(NSString *)property {
+    NSDictionary * propertyInfo = objc_getAssociatedObject(self, &WHC_ModelInfokey);
+    WHC_ModelInfo * modelInfo = nil;
+    if (propertyInfo != nil) {
+        modelInfo = propertyInfo[property];
+    }
+    return modelInfo;
+}
+
++ (void)setModelInfo:(WHC_ModelInfo *)modelInfo property:(NSString *)property {
+    NSMutableDictionary * propertyInfo = objc_getAssociatedObject(self, &WHC_ModelInfokey);
+    if (propertyInfo == nil) {
+        propertyInfo = [NSMutableDictionary dictionary];
+        objc_setAssociatedObject(self, &WHC_ModelInfokey, propertyInfo, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    [propertyInfo setObject:modelInfo forKey:property];
+}
 
 + (WHC_TYPE)getTypeProperty:(const char *)attributes {
     NSString * attr = [NSString stringWithUTF8String:attributes];
@@ -312,25 +335,32 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 }
 
 + (NSString *)existproperty:(NSString *)property withObject:(NSObject *)object {
-    if (object.superclass && ![NSStringFromClass(object.superclass) isEqualToString:@"NSObject"]) {
-        NSString * name =  [self existproperty:property withObject:object.superclass.new];
-        if (name != nil && name.length > 0) {
-            return name;
-        }
-    }
-    unsigned int  propertyCount = 0;
-    objc_property_t *properties = class_copyPropertyList([object class], &propertyCount);
-    for (unsigned int i = 0; i < propertyCount; ++i) {
-        objc_property_t property_t = properties[i];
+    objc_property_t property_t = class_getProperty(object.class, [property UTF8String]);
+    if (property_t != NULL) {
         const char * name = property_getName(property_t);
         NSString * nameString = [NSString stringWithUTF8String:name];
-        if ([nameString.lowercaseString isEqualToString:property.lowercaseString]) {
-            free(properties);
-            return nameString;
+        return nameString;
+    }else {
+        unsigned int  propertyCount = 0;
+        objc_property_t *properties = class_copyPropertyList([object class], &propertyCount);
+        for (unsigned int i = 0; i < propertyCount; ++i) {
+            objc_property_t property_t = properties[i];
+            const char * name = property_getName(property_t);
+            NSString * nameString = [NSString stringWithUTF8String:name];
+            if ([nameString.lowercaseString isEqualToString:property.lowercaseString]) {
+                free(properties);
+                return nameString;
+            }
         }
+        free(properties);
+        if (object.superclass && object.superclass != [NSObject class]) {
+            NSString * name =  [self existproperty:property withObject:object.superclass.new];
+            if (name != nil && name.length > 0) {
+                return name;
+            }
+        }
+        return property;
     }
-    free(properties);
-    return nil;
 }
 
 + (WHC_TYPE)parserTypeWithAttr:(NSString *)attr {
@@ -372,14 +402,20 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 }
 
 + (WHC_ModelInfo *)classExistProperty:(NSString *)property withObject:(NSObject *)object {
-    if (object.superclass && ![NSStringFromClass(object.superclass) isEqualToString:@"NSObject"]) {
-        WHC_ModelInfo * modelInfo = [self classExistProperty:property withObject:object.superclass.new];
-        if (modelInfo != nil) {
-            return modelInfo;
-        }
-    }
     WHC_ModelInfo * modelInfo = nil;
-    if (property != nil && property.length > 0) {
+    objc_property_t property_t = class_getProperty(object.class, [property UTF8String]);
+    if (property_t != NULL) {
+        const char * attributes = property_getAttributes(property_t);
+        NSString * attr = [NSString stringWithUTF8String:attributes];
+        NSArray * arrayString = [attr componentsSeparatedByString:@"\""];
+        modelInfo = [WHC_ModelInfo new];
+        if (arrayString.count == 1) {
+            modelInfo.type = [self parserTypeWithAttr:arrayString[0]];
+        }else {
+            modelInfo.class = NSClassFromString(arrayString[1]);
+        }
+        return modelInfo;
+    }else {
         unsigned int  propertyCount = 0;
         objc_property_t *properties = class_copyPropertyList([object class], &propertyCount);
         for (unsigned int i = 0; i < propertyCount; ++i) {
@@ -391,7 +427,6 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                 NSString * attr = [NSString stringWithUTF8String:attributes];
                 NSArray * arrayString = [attr componentsSeparatedByString:@"\""];
                 free(properties);
-                [self getTypeProperty:attributes];
                 modelInfo = [WHC_ModelInfo new];
                 if (arrayString.count == 1) {
                     modelInfo.type = [self parserTypeWithAttr:arrayString[0]];
@@ -402,12 +437,18 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
             }
         }
         free(properties);
+        if (object.superclass && object.superclass != [NSObject class]) {
+            modelInfo = [self classExistProperty:property withObject:object.superclass.new];
+            if (modelInfo != nil) {
+                return modelInfo;
+            }
+        }
     }
     return modelInfo;
 }
 
 + (id)handleDataModelEngine:(id)object class:(Class)class classPrefix:(NSString *)prefix {
-    if (prefix != nil && prefix.length != 0) {} else {
+    if (!(prefix != nil && prefix.length > 0)) {
         SEL prefixFunc = NSSelectorFromString(@"prefix");
         if ([class respondsToSelector:prefixFunc]) {
             IMP prefix_func = [class methodForSelector:prefixFunc];
@@ -417,98 +458,141 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
     }
     if(object) {
         if([object isKindOfClass:[NSDictionary class]]){
-            id  modelObject = [class new];
-            NSDictionary  * dict = object;
-            NSInteger       count = dict.count;
-            NSArray       * keyArr = [dict allKeys];
-            for (NSInteger i = 0; i < count; i++) {
-                id subObject = dict[keyArr[i]];
-                if(subObject){
-                    NSString * actualProperty = [self existproperty:keyArr[i] withObject:modelObject];
+            NSObject *  modelObject = [class new];
+            NSDictionary  * dictionary = object;
+            NSArray  *    keyArray = nil;
+            unsigned int  propertyCount = 0;
+            objc_property_t *properties = NULL;
+            if (modelObject.superclass &&
+                modelObject.superclass != [NSObject class]) {
+                keyArray = dictionary.allKeys;
+                propertyCount = (unsigned int)keyArray.count;
+            }else {
+                properties = class_copyPropertyList(class, &propertyCount);
+            }
+            for (unsigned int i = 0; i < propertyCount; i++) {
+                objc_property_t property_t = NULL;
+                NSString * actualProperty = nil;
+                if (properties) {
+                    property_t = properties[i];
+                    actualProperty = [NSString stringWithUTF8String:property_getName(property_t)];
+                }else {
+                    actualProperty = keyArray[i];
+                }
+                __block id subObject = dictionary[actualProperty];
+                if (subObject == nil) {
+                    [dictionary enumerateKeysAndObjectsUsingBlock:^(NSString * key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+                        if ([key.lowercaseString isEqualToString:actualProperty.lowercaseString]) {
+                            *stop = YES;
+                            subObject = obj;
+                        }
+                    }];
+                }
+                if(subObject) {
                     SEL setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[actualProperty substringToIndex:1].uppercaseString, [actualProperty substringFromIndex:1]]);
-                    if (actualProperty != nil) {
-                        WHC_ModelInfo * modelInfo = [self classExistProperty:keyArr[i] withObject:modelObject];
+                    if (![modelObject respondsToSelector:setter]) {
+                        actualProperty = [self existproperty:actualProperty withObject:modelObject];
+                        if (actualProperty == nil) continue;
+                        setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[actualProperty substringToIndex:1].uppercaseString, [actualProperty substringFromIndex:1]]);
+                    }
+                    WHC_ModelInfo * modelInfo;
+                    if (properties) {
+                        modelInfo = [class getModelInfo:actualProperty];
+                        if (modelInfo == nil) {
+                            const char * attribute = property_getAttributes(property_t);
+                            NSString * attributeName = [NSString stringWithUTF8String:attribute];
+                            NSArray * attributeNameComponents = [attributeName componentsSeparatedByString:@"\""];
+                            modelInfo = [WHC_ModelInfo new];
+                            if (attributeNameComponents.count == 1) {
+                                modelInfo.type = [self parserTypeWithAttr:attributeNameComponents[0]];
+                            }else {
+                                modelInfo.class = NSClassFromString(attributeNameComponents[1]);
+                            }
+                            [class setModelInfo:modelInfo property:actualProperty];
+                        }
+                    }else {
+                        modelInfo = [self classExistProperty:actualProperty withObject:modelObject];
                         if (modelInfo == nil) continue;
-                        switch (modelInfo.type) {
-                            case _Array:
-                                if([subObject isKindOfClass:[NSNull class]]){
-                                    [modelObject setValue:@[] forKey:actualProperty];
-                                }else{
-                                    NSString * className =  keyArr[i];
-                                    Class subModelClass = NSClassFromString(className);
-                                    if (subModelClass == nil || (prefix != nil && prefix.length > 0)) {
-                                        NSString * first = [className substringToIndex:1];
-                                        NSString * other = [className substringFromIndex:1];
-                                        if (prefix.length > 0) {
-                                            subModelClass = NSClassFromString([NSString stringWithFormat:@"%@%@%@",prefix,[first uppercaseString],other]);
-                                            if (subModelClass == nil) {
-                                                subModelClass = NSClassFromString([NSString stringWithFormat:@"%@%@",prefix,className]);
-                                            }
-                                        }else {
-                                            subModelClass = NSClassFromString([NSString stringWithFormat:@"%@%@",[first uppercaseString],other]);
-                                            if (subModelClass == nil) {
-                                                subModelClass = NSClassFromString([NSString stringWithFormat:@"%@",className]);
-                                            }
+                    }
+                    switch (modelInfo.type) {
+                        case _Array:
+                            if(![subObject isKindOfClass:[NSNull class]]){
+                                NSString * className = actualProperty;
+                                Class subModelClass = NSClassFromString(className);
+                                if (subModelClass == nil || (prefix != nil && prefix.length > 0)) {
+                                    NSString * first = [className substringToIndex:1];
+                                    NSString * other = [className substringFromIndex:1];
+                                    if (prefix.length > 0) {
+                                        subModelClass = NSClassFromString([NSString stringWithFormat:@"%@%@%@",prefix,[first uppercaseString],other]);
+                                        if (subModelClass == nil) {
+                                            subModelClass = NSClassFromString([NSString stringWithFormat:@"%@%@",prefix,className]);
+                                        }
+                                    }else {
+                                        subModelClass = NSClassFromString([NSString stringWithFormat:@"%@%@",[first uppercaseString],other]);
+                                        if (subModelClass == nil) {
+                                            subModelClass = NSClassFromString([NSString stringWithFormat:@"%@",className]);
                                         }
                                     }
-                                    if (subModelClass) {
-                                        id subModelObject = [self handleDataModelEngine:subObject class:subModelClass classPrefix:prefix];
-                                        NSString * actualProperty = [self existproperty:keyArr[i] withObject:modelObject];
-                                        [modelObject setValue:[subModelObject mutableCopy] forKey:actualProperty];
-                                    }else {
-                                        [modelObject setValue:[subObject mutableCopy] forKey:actualProperty];
-                                    }
                                 }
-                                break;
-                            case _String:
-                                if([subObject isKindOfClass:[NSNull class]]){
-                                    [modelObject setValue:@"" forKey:actualProperty];
-                                }else{
-                                    [modelObject setValue:subObject forKey:actualProperty];
+                                if (subModelClass) {
+                                    ((void (*)(id, SEL, NSArray *))(void *) objc_msgSend)((id)modelObject, setter, [self handleDataModelEngine:subObject class:subModelClass classPrefix:prefix]);
+                                }else {
+                                    ((void (*)(id, SEL, NSArray *))(void *) objc_msgSend)((id)modelObject, setter, subObject);
                                 }
-                                break;
-                            case _Number:
-                                if([subObject isKindOfClass:[NSNull class]]){
-                                    [modelObject setValue:@(0) forKey:actualProperty];
-                                }else{
-                                    [modelObject setValue:subObject forKey:actualProperty];
-                                }
-                                break;
-                            case _Integer:
-                                ((void (*)(id, SEL, NSInteger))(void *) objc_msgSend)((id)modelObject, setter, [subObject integerValue]);
-                                break;
-                            case _UInteger:
-                                ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)modelObject, setter, [subObject unsignedIntegerValue]);
-                                break;
-                            case _Boolean:
-                                ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)modelObject, setter, [subObject boolValue]);
-                                break;
-                            case _Float:
-                                ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)modelObject, setter, [subObject floatValue]);
-                                break;
-                            case _Double:
-                                ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)modelObject, setter, [subObject doubleValue]);
-                                break;
-                            case _Char:
-                                ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)modelObject, setter, [subObject charValue]);
-                                break;
-                            case _Model: {
-                                id subModelObject = [self handleDataModelEngine:subObject class:modelInfo.class classPrefix:prefix];
-                                [modelObject setValue:subModelObject forKey:actualProperty];
-                            }
-                                break;
-                            case _Data: {
-                                if(![subObject isKindOfClass:[NSNull class]]){
-                                    [modelObject setValue:subObject forKey:actualProperty];
-                                }
-                                break;
-                            }
-                            default:
                                 
-                                break;
+                            }else{
+                                ((void (*)(id, SEL, NSArray *))(void *) objc_msgSend)((id)modelObject, setter, @[]);
+                            }
+                            break;
+                        case _String:
+                            if(![subObject isKindOfClass:[NSNull class]]){
+                                ((void (*)(id, SEL, NSString *))(void *) objc_msgSend)((id)modelObject, setter, subObject);
+                            }else{
+                                ((void (*)(id, SEL, NSString *))(void *) objc_msgSend)((id)modelObject, setter, @"");
+                            }
+                            break;
+                        case _Number:
+                            if(![subObject isKindOfClass:[NSNull class]]){
+                                ((void (*)(id, SEL, NSNumber *))(void *) objc_msgSend)((id)modelObject, setter, subObject);
+                            }else{
+                                ((void (*)(id, SEL, NSNumber *))(void *) objc_msgSend)((id)modelObject, setter, @(0));
+                            }
+                            break;
+                        case _Integer:
+                            ((void (*)(id, SEL, NSInteger))(void *) objc_msgSend)((id)modelObject, setter, [subObject integerValue]);
+                            break;
+                        case _UInteger:
+                            ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)modelObject, setter, [subObject unsignedIntegerValue]);
+                            break;
+                        case _Boolean:
+                            ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)modelObject, setter, [subObject boolValue]);
+                            break;
+                        case _Float:
+                            ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)modelObject, setter, [subObject floatValue]);
+                            break;
+                        case _Double:
+                            ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)modelObject, setter, [subObject doubleValue]);
+                            break;
+                        case _Char:
+                            ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)modelObject, setter, [subObject charValue]);
+                            break;
+                        case _Model:
+                            ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)modelObject, setter, [self handleDataModelEngine:subObject class:modelInfo.class classPrefix:prefix]);
+                            break;
+                        case _Data: {
+                            if(![subObject isKindOfClass:[NSNull class]]){
+                                ((void (*)(id, SEL, NSData *))(void *) objc_msgSend)((id)modelObject, setter, subObject);
+                            }
+                            break;
                         }
+                        default:
+                            
+                            break;
                     }
                 }
+            }
+            if (properties) {
+                free(properties);
             }
             return modelObject;
         }else if ([object isKindOfClass:[NSArray class]]){

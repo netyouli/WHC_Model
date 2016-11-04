@@ -8,6 +8,10 @@
 
 #import "ModelObject.h"
 
+@implementation ModelObjectSuper
+
+@end
+
 @implementation ModelObject
 
 @end

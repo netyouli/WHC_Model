@@ -9,218 +9,222 @@
 #import <UIKit/UIKit.h>
 
 
+
 @interface Head :NSObject
-@property (nonatomic , copy) NSString              * responseTime;
-@property (nonatomic , copy) NSString              * receiveTime;
-@property (nonatomic , copy) NSString              * resultMsg;
-@property (nonatomic , assign) NSInteger              resultCode;
-@property (nonatomic , copy) NSString              * requestTime;
-@property (nonatomic , copy) NSString              * sessionId;
+@property (nonatomic , copy) NSString              * ResponseTime;
+@property (nonatomic , copy) NSString              * ReceiveTime;
+@property (nonatomic , copy) NSString              * ResultMsg;
+@property (nonatomic , assign) NSInteger              ResultCode;
+@property (nonatomic , copy) NSString              * RequestTime;
+@property (nonatomic , copy) NSString              * SessionId;
 
 @end
 
 @interface ChangeRule :NSObject
-@property (nonatomic , copy) NSString              * ruleRestriction;
-@property (nonatomic , copy) NSString              * ruleNote;
-@property (nonatomic , copy) NSString              * ruleRemarks;
-@property (nonatomic , copy) NSString              * ruleRemarks_En;
-@property (nonatomic , copy) NSString              * ruleNote_En;
+@property (nonatomic , copy) NSString              * RuleRestriction;
+@property (nonatomic , copy) NSString              * RuleNote;
+@property (nonatomic , copy) NSString              * RuleRemarks;
+@property (nonatomic , copy) NSString              * RuleRemarks_En;
+@property (nonatomic , copy) NSString              * RuleNote_En;
 
 @end
 
 @interface FeeInfoList :NSObject
-@property (nonatomic , copy) NSString              * feeType;
-@property (nonatomic , assign) CGFloat              fee;
+@property (nonatomic , copy) NSString              * FeeType;
+@property (nonatomic , assign) NSInteger              Fee;
 
 @end
 
 @interface EndorseRule :NSObject
-@property (nonatomic , copy) NSString              * ruleRestriction;
-@property (nonatomic , copy) NSString              * ruleNote;
-@property (nonatomic , copy) NSString              * ruleRemarks;
-@property (nonatomic , copy) NSString              * ruleRemarks_En;
-@property (nonatomic , copy) NSString              * ruleNote_En;
+@property (nonatomic , copy) NSString              * RuleRestriction;
+@property (nonatomic , copy) NSString              * RuleNote;
+@property (nonatomic , copy) NSString              * RuleRemarks;
+@property (nonatomic , copy) NSString              * RuleRemarks_En;
+@property (nonatomic , copy) NSString              * RuleNote_En;
 
 @end
 
 @interface RefundRule :NSObject
-@property (nonatomic , copy) NSString              * ruleRestriction;
-@property (nonatomic , copy) NSString              * ruleNote;
-@property (nonatomic , copy) NSString              * ruleRemarks;
-@property (nonatomic , copy) NSString              * ruleRemarks_En;
-@property (nonatomic , copy) NSString              * ruleNote_En;
+@property (nonatomic , copy) NSString              * RuleRestriction;
+@property (nonatomic , copy) NSString              * RuleNote;
+@property (nonatomic , copy) NSString              * RuleRemarks;
+@property (nonatomic , copy) NSString              * RuleRemarks_En;
+@property (nonatomic , copy) NSString              * RuleNote_En;
 
 @end
 
 @interface PolicyRuleList :NSObject
-@property (nonatomic , copy) NSString              * travelerCategory;
-@property (nonatomic , assign) BOOL              canUpgrade;
-@property (nonatomic , assign) NSInteger              index;
-@property (nonatomic , strong) ChangeRule              * changeRule;
-@property (nonatomic , copy) NSString              * refundFeeFormulaID;
-@property (nonatomic , copy) NSString              * isPackageProduct;
+@property (nonatomic , copy) NSString              * TravelerCategory;
+@property (nonatomic , assign) BOOL              CanUpgrade;
+@property (nonatomic , assign) NSInteger              Index;
+@property (nonatomic , strong) ChangeRule              * ChangeRule;
+@property (nonatomic , copy) NSString              * RefundFeeFormulaID;
+@property (nonatomic , copy) NSString              * IsPackageProduct;
 @property (nonatomic , strong) NSArray<FeeInfoList *>              * FeeInfoList;
-@property (nonatomic , strong) EndorseRule              * endorseRule;
-@property (nonatomic , strong) RefundRule              * refundRule;
-@property (nonatomic , copy) NSString              * ticketType;
-
-@end
-
-@interface StandardPriceList :NSObject
-@property (nonatomic , assign) CGFloat              price;
-@property (nonatomic , copy) NSString              * cabinClass;
+@property (nonatomic , strong) EndorseRule              * EndorseRule;
+@property (nonatomic , strong) RefundRule              * RefundRule;
+@property (nonatomic , copy) NSString              * TicketType;
 
 @end
 
 @interface PriceInfo_Child :NSObject
-@property (nonatomic , assign) NSInteger              travelerCategory;
-@property (nonatomic , assign) CGFloat              rate;
-@property (nonatomic , assign) CGFloat              printPrice;
-@property (nonatomic , assign) CGFloat              hZPrice;
-@property (nonatomic , assign) CGFloat              discount;
-@property (nonatomic , assign) CGFloat              fDPrice;
-@property (nonatomic , assign) CGFloat              costPrice;
-@property (nonatomic , assign) CGFloat              price;
-@property (nonatomic , assign) CGFloat              salePrice;
-@property (nonatomic , assign) CGFloat              commission;
-@property (nonatomic , assign) CGFloat              subsidy;
+@property (nonatomic , assign) NSInteger              Rate;
+@property (nonatomic , assign) NSInteger              TravelerCategory;
+@property (nonatomic , assign) NSInteger              FDPrice;
+@property (nonatomic , assign) NSInteger              HZPrice;
+@property (nonatomic , assign) NSInteger              PrintPrice;
+@property (nonatomic , assign) NSInteger              Discount;
+@property (nonatomic , assign) NSInteger              CostPrice;
+@property (nonatomic , assign) NSInteger              Price;
+@property (nonatomic , assign) NSInteger              Subsidy;
+@property (nonatomic , assign) NSInteger              Commission;
+@property (nonatomic , assign) NSInteger              SalePrice;
 
 @end
 
 @interface AirLineShowEntity :NSObject
-@property (nonatomic , assign) CGFloat              price;
-@property (nonatomic , copy) NSString              * subClass;
+@property (nonatomic , assign) NSInteger              Price;
+@property (nonatomic , copy) NSString              * SubClass;
 
 @end
 
 @interface PriceInfo_Adult :NSObject
-@property (nonatomic , assign) NSInteger              travelerCategory;
-@property (nonatomic , assign) CGFloat              rate;
-@property (nonatomic , assign) CGFloat              printPrice;
-@property (nonatomic , assign) CGFloat              hZPrice;
-@property (nonatomic , assign) CGFloat              discount;
-@property (nonatomic , assign) CGFloat              fDPrice;
-@property (nonatomic , assign) CGFloat              costPrice;
-@property (nonatomic , assign) CGFloat              price;
-@property (nonatomic , assign) CGFloat              salePrice;
-@property (nonatomic , assign) CGFloat              commission;
-@property (nonatomic , assign) CGFloat              subsidy;
+@property (nonatomic , assign) CGFloat              Rate;
+@property (nonatomic , assign) NSInteger              TravelerCategory;
+@property (nonatomic , assign) NSInteger              FDPrice;
+@property (nonatomic , assign) NSInteger              HZPrice;
+@property (nonatomic , assign) NSInteger              PrintPrice;
+@property (nonatomic , assign) NSInteger              Discount;
+@property (nonatomic , assign) NSInteger              CostPrice;
+@property (nonatomic , assign) NSInteger              Price;
+@property (nonatomic , assign) NSInteger              Subsidy;
+@property (nonatomic , assign) NSInteger              Commission;
+@property (nonatomic , assign) NSInteger              SalePrice;
 
 @end
-
-@interface LowestPriceCabin :NSObject
-@property (nonatomic , copy) NSString              * bookingClass;
-@property (nonatomic , assign) BOOL              applyChild;
-@property (nonatomic , assign) BOOL              isSupportChildPolicy;
-@property (nonatomic , copy) NSString              * cabinClass;
-@property (nonatomic , assign) NSInteger              productSource;
-@property (nonatomic , copy) NSString              * productType;
-@property (nonatomic , copy) NSString              * realSubclass;
-@property (nonatomic , copy) NSString              * policyCategory;
-@property (nonatomic , assign) NSInteger              billType;
-@property (nonatomic , strong) NSArray<NSNumber *>              * PolicyRuleIndexList;
-@property (nonatomic , assign) NSInteger              seatCount;
-@property (nonatomic , strong) PriceInfo_Child              * priceInfo_Child;
-@property (nonatomic , copy) NSString              * priceInfo_Infant;
-@property (nonatomic , copy) NSString              * ticketDeadline;
-@property (nonatomic , copy) NSString              * policyID;
-@property (nonatomic , copy) NSString              * productAttribute;
-@property (nonatomic , copy) NSString              * pID;
-@property (nonatomic , assign) BOOL              isSupportBabyPolicy;
-@property (nonatomic , strong) AirLineShowEntity              * airLineShowEntity;
-@property (nonatomic , copy) NSString              * productID;
-@property (nonatomic , copy) NSString              * saleType;
-@property (nonatomic , strong) PriceInfo_Adult              * priceInfo_Adult;
-
-@end
-
 
 @interface CabinInfoList :NSObject
-@property (nonatomic , copy) NSString              * bookingClass;
-@property (nonatomic , assign) BOOL              applyChild;
-@property (nonatomic , assign) BOOL              isSupportChildPolicy;
-@property (nonatomic , copy) NSString              * cabinClass;
-@property (nonatomic , assign) NSInteger              productSource;
-@property (nonatomic , copy) NSString              * productType;
-@property (nonatomic , copy) NSString              * realSubclass;
-@property (nonatomic , copy) NSString              * policyCategory;
-@property (nonatomic , assign) NSInteger              billType;
+@property (nonatomic , copy) NSString              * BookingClass;
+@property (nonatomic , assign) BOOL              ApplyChild;
+@property (nonatomic , assign) BOOL              IsSupportChildPolicy;
+@property (nonatomic , copy) NSString              * CabinClass;
+@property (nonatomic , assign) NSInteger              ProductSource;
+@property (nonatomic , copy) NSString              * ProductType;
+@property (nonatomic , copy) NSString              * RealSubclass;
+@property (nonatomic , copy) NSString              * PolicyCategory;
+@property (nonatomic , assign) NSInteger              BillType;
 @property (nonatomic , strong) NSArray<NSNumber *>              * PolicyRuleIndexList;
-@property (nonatomic , assign) NSInteger              seatCount;
-@property (nonatomic , strong) PriceInfo_Child              * priceInfo_Child;
-@property (nonatomic , copy) NSString              * priceInfo_Infant;
-@property (nonatomic , copy) NSString              * ticketDeadline;
-@property (nonatomic , copy) NSString              * policyID;
-@property (nonatomic , copy) NSString              * productAttribute;
-@property (nonatomic , copy) NSString              * pID;
-@property (nonatomic , assign) BOOL              isSupportBabyPolicy;
-@property (nonatomic , strong) AirLineShowEntity              * airLineShowEntity;
-@property (nonatomic , copy) NSString              * productID;
-@property (nonatomic , copy) NSString              * saleType;
-@property (nonatomic , strong) PriceInfo_Adult              * priceInfo_Adult;
+@property (nonatomic , assign) NSInteger              SeatCount;
+@property (nonatomic , strong) PriceInfo_Child              * PriceInfo_Child;
+@property (nonatomic , copy) NSString              * PriceInfo_Infant;
+@property (nonatomic , copy) NSString              * TicketDeadline;
+@property (nonatomic , copy) NSString              * PolicyID;
+@property (nonatomic , copy) NSString              * ProductAttribute;
+@property (nonatomic , copy) NSString              * PID;
+@property (nonatomic , assign) BOOL              IsSupportBabyPolicy;
+@property (nonatomic , strong) AirLineShowEntity              * AirLineShowEntity;
+@property (nonatomic , copy) NSString              * ProductID;
+@property (nonatomic , copy) NSString              * SaleType;
+@property (nonatomic , strong) PriceInfo_Adult              * PriceInfo_Adult;
+
+@end
+
+@interface StandardPriceList :NSObject
+@property (nonatomic , assign) NSInteger              Price;
+@property (nonatomic , copy) NSString              * CabinClass;
+
+@end
+
+
+@interface LowestPriceCabin :NSObject
+@property (nonatomic , copy) NSString              * BookingClass;
+@property (nonatomic , assign) BOOL              ApplyChild;
+@property (nonatomic , assign) BOOL              IsSupportChildPolicy;
+@property (nonatomic , copy) NSString              * CabinClass;
+@property (nonatomic , assign) NSInteger              ProductSource;
+@property (nonatomic , copy) NSString              * ProductType;
+@property (nonatomic , copy) NSString              * RealSubclass;
+@property (nonatomic , copy) NSString              * PolicyCategory;
+@property (nonatomic , assign) NSInteger              BillType;
+@property (nonatomic , strong) NSArray<NSNumber *>              * PolicyRuleIndexList;
+@property (nonatomic , assign) NSInteger              SeatCount;
+@property (nonatomic , strong) PriceInfo_Child              * PriceInfo_Child;
+@property (nonatomic , copy) NSString              * PriceInfo_Infant;
+@property (nonatomic , copy) NSString              * TicketDeadline;
+@property (nonatomic , copy) NSString              * PolicyID;
+@property (nonatomic , copy) NSString              * ProductAttribute;
+@property (nonatomic , copy) NSString              * PID;
+@property (nonatomic , assign) BOOL              IsSupportBabyPolicy;
+@property (nonatomic , strong) AirLineShowEntity              * AirLineShowEntity;
+@property (nonatomic , copy) NSString              * ProductID;
+@property (nonatomic , copy) NSString              * SaleType;
+@property (nonatomic , strong) PriceInfo_Adult              * PriceInfo_Adult;
 
 @end
 
 @interface PunctualityRateDetail :NSObject
-@property (nonatomic , assign) CGFloat              delayOver90;
-@property (nonatomic , assign) CGFloat              cancel;
-@property (nonatomic , assign) CGFloat              onTime;
-@property (nonatomic , assign) CGFloat              delay30To60;
-@property (nonatomic , assign) CGFloat              delay60To90;
+@property (nonatomic , assign) NSInteger              Cancel;
+@property (nonatomic , assign) NSInteger              Delay60To90;
+@property (nonatomic , assign) CGFloat              OnTime;
+@property (nonatomic , assign) NSInteger              Delay30To60;
+@property (nonatomic , assign) NSInteger              DelayOver90;
 
 @end
 
 @interface FlightInfoList :NSObject
-@property (nonatomic , copy) NSString              * deptAirportCode;
-@property (nonatomic , strong) NSArray<StandardPriceList *>              * StandardPriceList;
-@property (nonatomic , assign) BOOL              isFlyMan;
-@property (nonatomic , strong) LowestPriceCabin              * lowestPriceCabin;
-@property (nonatomic , copy) NSString              * arrvCityCode;
+@property (nonatomic , copy) NSString              * DeptAirportCode;
+@property (nonatomic , copy) NSString              * DeptDateTime;
+@property (nonatomic , assign) BOOL              IsFlyMan;
+@property (nonatomic , copy) NSString              * DeptAirportName;
+@property (nonatomic , copy) NSString              * ArrvCityCode;
+@property (nonatomic , assign) NSInteger              NextDays;
+@property (nonatomic , copy) NSString              * ArrvAirportName;
+@property (nonatomic , copy) NSString              * ArrvAirportCode;
+@property (nonatomic , copy) NSString              * FlightStopList;
+@property (nonatomic , assign) NSInteger              DataSource;
+@property (nonatomic , copy) NSString              * MealType;
+@property (nonatomic , assign) CGFloat              PunctualityRate;
+@property (nonatomic , copy) NSString              * CraftType;
+@property (nonatomic , copy) NSString              * DeptCityCode;
+@property (nonatomic , copy) NSString              * SharedFlight;
+@property (nonatomic , copy) NSString              * ArrvCityName;
+@property (nonatomic , assign) NSInteger              BuildFee;
+@property (nonatomic , copy) NSString              * ArrvDateTime;
+@property (nonatomic , assign) NSInteger              FuelFee;
+@property (nonatomic , assign) NSInteger              SegmentIndex;
+@property (nonatomic , copy) NSString              * CarrierName;
+@property (nonatomic , copy) NSString              * FlightNumber;
+@property (nonatomic , copy) NSString              * ArrvTerminalID;
+@property (nonatomic , copy) NSString              * CarrierCode;
+@property (nonatomic , copy) NSString              * DeptTerminalID;
 @property (nonatomic , strong) NSArray<CabinInfoList *>              * CabinInfoList;
-@property (nonatomic , copy) NSString              * arrvAirportName;
-@property (nonatomic , copy) NSString              * arrvAirportCode;
-@property (nonatomic , copy) NSString              * flightStopList;
-@property (nonatomic , assign) NSInteger              dataSource;
-@property (nonatomic , copy) NSString              * mealType;
-@property (nonatomic , assign) CGFloat              punctualityRate;
-@property (nonatomic , copy) NSString              * craftType;
-@property (nonatomic , copy) NSString              * deptCityCode;
-@property (nonatomic , copy) NSString              * sharedFlight;
-@property (nonatomic , copy) NSString              * arrvCityName;
-@property (nonatomic , assign) CGFloat              buildFee;
-@property (nonatomic , copy) NSString              * arrvDateTime;
-@property (nonatomic , assign) CGFloat              fuelFee;
-@property (nonatomic , assign) NSInteger              segmentIndex;
-@property (nonatomic , copy) NSString              * carrierName;
-@property (nonatomic , copy) NSString              * flightNumber;
-@property (nonatomic , copy) NSString              * arrvTerminalID;
-@property (nonatomic , copy) NSString              * carrierCode;
-@property (nonatomic , copy) NSString              * deptTerminalID;
-@property (nonatomic , assign) BOOL              isShareFlight;
-@property (nonatomic , copy) NSString              * deptCityName;
-@property (nonatomic , strong) PunctualityRateDetail              * punctualityRateDetail;
-@property (nonatomic , copy) NSString              * deptDateTime;
-@property (nonatomic , copy) NSString              * deptAirportName;
-@property (nonatomic , assign) NSInteger              nextDays;
+@property (nonatomic , assign) BOOL              IsShareFlight;
+@property (nonatomic , strong) NSArray<StandardPriceList *>              * StandardPriceList;
+@property (nonatomic , strong) LowestPriceCabin              * LowestPriceCabin;
+@property (nonatomic , copy) NSString              * DeptCityName;
+@property (nonatomic , strong) PunctualityRateDetail              * PunctualityRateDetail;
 
 @end
 
 @interface FlightListGroupList :NSObject
 @property (nonatomic , strong) NSArray<FlightInfoList *>              * FlightInfoList;
-@property (nonatomic , assign) NSInteger              origDestSeqID;
+@property (nonatomic , assign) NSInteger              OrigDestSeqID;
 
 @end
 
 @interface ResponseBody :NSObject
 @property (nonatomic , strong) NSArray<PolicyRuleList *>              * PolicyRuleList;
 @property (nonatomic , strong) NSArray<FlightListGroupList *>              * FlightListGroupList;
-@property (nonatomic , assign) BOOL              isCompleted;
+@property (nonatomic , assign) BOOL              IsCompleted;
 
 @end
 
-@interface ModelObject :NSObject
-@property (nonatomic , strong) Head              * head;
-@property (nonatomic , strong) ResponseBody              * responseBody;
+@interface ModelObjectSuper : NSObject
+@property (nonatomic , strong) Head              * Head;
+@end
+
+@interface ModelObject :ModelObjectSuper
+@property (nonatomic , strong) ResponseBody              * ResponseBody;
 
 @end
 

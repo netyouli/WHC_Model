@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FE275F381DC9ED7A002317C1 /* ModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = FE275F361DC9ED7A002317C1 /* ModelObject.m */; };
 		FECDABAF1DC878DE00B510AA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FECDABAE1DC878DE00B510AA /* main.m */; };
 		FECDABB21DC878DE00B510AA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FECDABB11DC878DE00B510AA /* AppDelegate.m */; };
 		FECDABB51DC878DE00B510AA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FECDABB41DC878DE00B510AA /* ViewController.m */; };
@@ -15,11 +16,12 @@
 		FECDABBD1DC878DE00B510AA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FECDABBB1DC878DE00B510AA /* LaunchScreen.storyboard */; };
 		FECDABC71DC8793200B510AA /* NSObject+WHC_Model.m in Sources */ = {isa = PBXBuildFile; fileRef = FECDABC61DC8793200B510AA /* NSObject+WHC_Model.m */; };
 		FECDABD51DC8827D00B510AA /* ModelObject.json in Resources */ = {isa = PBXBuildFile; fileRef = FECDABD41DC8827D00B510AA /* ModelObject.json */; };
-		FECDABD81DC882CC00B510AA /* ModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = FECDABD71DC882CC00B510AA /* ModelObject.m */; };
 		FECDABDA1DC88D0A00B510AA /* WHC_Model.podspec in Resources */ = {isa = PBXBuildFile; fileRef = FECDABD91DC88D0A00B510AA /* WHC_Model.podspec */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FE275F361DC9ED7A002317C1 /* ModelObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelObject.m; sourceTree = "<group>"; };
+		FE275F371DC9ED7A002317C1 /* ModelObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelObject.h; sourceTree = "<group>"; };
 		FECDABAA1DC878DE00B510AA /* WHC_Model.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WHC_Model.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FECDABAE1DC878DE00B510AA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FECDABB01DC878DE00B510AA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -33,8 +35,6 @@
 		FECDABC51DC8793200B510AA /* NSObject+WHC_Model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+WHC_Model.h"; sourceTree = "<group>"; };
 		FECDABC61DC8793200B510AA /* NSObject+WHC_Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+WHC_Model.m"; sourceTree = "<group>"; };
 		FECDABD41DC8827D00B510AA /* ModelObject.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ModelObject.json; sourceTree = "<group>"; };
-		FECDABD61DC882CC00B510AA /* ModelObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelObject.h; sourceTree = "<group>"; };
-		FECDABD71DC882CC00B510AA /* ModelObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelObject.m; sourceTree = "<group>"; };
 		FECDABD91DC88D0A00B510AA /* WHC_Model.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WHC_Model.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -105,8 +105,8 @@
 		FECDABC81DC879D400B510AA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				FECDABD61DC882CC00B510AA /* ModelObject.h */,
-				FECDABD71DC882CC00B510AA /* ModelObject.m */,
+				FE275F361DC9ED7A002317C1 /* ModelObject.m */,
+				FE275F371DC9ED7A002317C1 /* ModelObject.h */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -194,7 +194,7 @@
 			files = (
 				FECDABC71DC8793200B510AA /* NSObject+WHC_Model.m in Sources */,
 				FECDABB51DC878DE00B510AA /* ViewController.m in Sources */,
-				FECDABD81DC882CC00B510AA /* ModelObject.m in Sources */,
+				FE275F381DC9ED7A002317C1 /* ModelObject.m in Sources */,
 				FECDABB21DC878DE00B510AA /* AppDelegate.m in Sources */,
 				FECDABAF1DC878DE00B510AA /* main.m in Sources */,
 			);

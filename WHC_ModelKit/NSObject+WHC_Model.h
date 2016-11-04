@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// VERSION:(1.0.0)
+// VERSION:(1.1.0)
 #import <Foundation/Foundation.h>
 
 @interface NSObject (WHC_Model)
@@ -33,20 +33,20 @@
  *@param array :json数组
  *@return 模型对象数组
  */
-+ (NSArray*)modelWithArray:(NSArray*)array;
++ (NSArray*)whc_ModelWithArray:(NSArray*)array;
 
 /** 说明: 把json数组解析为模型对象数组
  *@param array :json数组
  *@return 模型对象数组
  */
 
-+ (NSArray*)modelWithArray:(NSArray*)array classPrefix:(NSString *)prefix;
++ (NSArray*)whc_ModelWithArray:(NSArray*)array classPrefix:(NSString *)prefix;
 
 /** 说明:把json字典解析为模型对象
  *@param dictionary :json字典
  *@return 模型对象
  */
-+ (id)modelWithDictionary:(NSDictionary*)dictionary;
++ (id)whc_ModelWithDictionary:(NSDictionary*)dictionary;
 
 /** 说明:把json字典解析为模型对象
  *@param dictionary :json字典
@@ -54,20 +54,20 @@
  *@return 模型对象
  */
 
-+ (id)modelWithDictionary:(NSDictionary*)dictionary classPrefix:(NSString *)prefix;
++ (id)whc_ModelWithDictionary:(NSDictionary*)dictionary classPrefix:(NSString *)prefix;
 
 /** 说明:把json解析为模型对象
  *@param json :json 字符串
  *@return 模型对象
  */
-+ (id)modelWithJson:(NSString *)json;
++ (id)whc_ModelWithJson:(NSString *)json;
 
 /** 说明:把json解析为模型对象
  *@param json :json 字符串
  *@param keyPath json key的路径
  *@return 模型对象
  */
-+ (id)modelWithJson:(NSString *)json keyPath:(NSString *)keyPath;
++ (id)whc_ModelWithJson:(NSString *)json keyPath:(NSString *)keyPath;
 
 /** 说明:把json解析为模型对象
  *@param json :json 字符串
@@ -75,13 +75,13 @@
  *@return 模型对象
  */
 
-+ (id)modelWithJson:(NSString *)json classPrefix:(NSString *)prefix;
++ (id)whc_ModelWithJson:(NSString *)json classPrefix:(NSString *)prefix;
 
 /** 说明:把json解析为模型对象
  *@param jsonData :jsonData json数据对象
  *@return 模型对象
  */
-+ (id)modelWithJsonData:(NSData *)jsonData;
++ (id)whc_ModelWithJsonData:(NSData *)jsonData;
 
 /** 说明:把json解析为模型对象
  *@param jsonData :jsonData json数据对象
@@ -89,14 +89,14 @@
  *@return 模型对象
  */
 
-+ (id)modelWithJsonData:(NSData *)jsonData keyPath:(NSString *)keyPath;
++ (id)whc_ModelWithJsonData:(NSData *)jsonData keyPath:(NSString *)keyPath;
 
 /** 说明:把json解析为模型对象
  *@param jsonData :jsonData json数据对象
  *@param prefix :自定义模型类前缀名称
  *@return 模型对象
  */
-+ (id)modelWithJsonData:(NSData *)jsonData classPrefix:(NSString *)prefix;
++ (id)whc_ModelWithJsonData:(NSData *)jsonData classPrefix:(NSString *)prefix;
 
 #pragma mark - 模型对象转json Api -
 
@@ -104,11 +104,11 @@
  *@return 字典对象
  */
 
-- (NSDictionary *)dictionary;
+- (NSDictionary *)whc_Dictionary;
 
 /** 说明:把模型对象转换为json字符串
  *@return json字符串
  */
 
-- (NSString *)json;
+- (NSString *)whc_Json;
 @end
