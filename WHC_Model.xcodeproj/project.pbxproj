@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		FE275F381DC9ED7A002317C1 /* ModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = FE275F361DC9ED7A002317C1 /* ModelObject.m */; };
+		FE4244831DCC9FBD007C79E0 /* a.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4244811DCC9FBD007C79E0 /* a.png */; };
+		FE4244841DCC9FBD007C79E0 /* b.png in Resources */ = {isa = PBXBuildFile; fileRef = FE4244821DCC9FBD007C79E0 /* b.png */; };
 		FECDABAF1DC878DE00B510AA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FECDABAE1DC878DE00B510AA /* main.m */; };
 		FECDABB21DC878DE00B510AA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FECDABB11DC878DE00B510AA /* AppDelegate.m */; };
 		FECDABB51DC878DE00B510AA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FECDABB41DC878DE00B510AA /* ViewController.m */; };
@@ -22,6 +24,8 @@
 /* Begin PBXFileReference section */
 		FE275F361DC9ED7A002317C1 /* ModelObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelObject.m; sourceTree = "<group>"; };
 		FE275F371DC9ED7A002317C1 /* ModelObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelObject.h; sourceTree = "<group>"; };
+		FE4244811DCC9FBD007C79E0 /* a.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = a.png; sourceTree = "<group>"; };
+		FE4244821DCC9FBD007C79E0 /* b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = b.png; sourceTree = "<group>"; };
 		FECDABAA1DC878DE00B510AA /* WHC_Model.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WHC_Model.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FECDABAE1DC878DE00B510AA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FECDABB01DC878DE00B510AA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -49,10 +53,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FE4244801DCC9FBD007C79E0 /* Result */ = {
+			isa = PBXGroup;
+			children = (
+				FE4244811DCC9FBD007C79E0 /* a.png */,
+				FE4244821DCC9FBD007C79E0 /* b.png */,
+			);
+			path = Result;
+			sourceTree = "<group>";
+		};
 		FECDABA11DC878DE00B510AA = {
 			isa = PBXGroup;
 			children = (
 				FECDABD91DC88D0A00B510AA /* WHC_Model.podspec */,
+				FE4244801DCC9FBD007C79E0 /* Result */,
 				FECDABC41DC8793200B510AA /* WHC_ModelKit */,
 				FECDABAC1DC878DE00B510AA /* WHC_Model */,
 				FECDABAB1DC878DE00B510AA /* Products */,
@@ -180,8 +194,10 @@
 				FECDABDA1DC88D0A00B510AA /* WHC_Model.podspec in Resources */,
 				FECDABBD1DC878DE00B510AA /* LaunchScreen.storyboard in Resources */,
 				FECDABBA1DC878DE00B510AA /* Assets.xcassets in Resources */,
+				FE4244831DCC9FBD007C79E0 /* a.png in Resources */,
 				FECDABB81DC878DE00B510AA /* Main.storyboard in Resources */,
 				FECDABD51DC8827D00B510AA /* ModelObject.json in Resources */,
+				FE4244841DCC9FBD007C79E0 /* b.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
