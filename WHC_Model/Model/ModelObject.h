@@ -10,7 +10,7 @@
 
 
 
-@interface Head :NSObject
+@interface Head :NSObject<NSCoding, NSCopying>
 @property (nonatomic , copy) NSString              * ResponseTime;
 @property (nonatomic , copy) NSString              * ReceiveTime;
 @property (nonatomic , copy) NSString              * ResultMsg;
@@ -20,7 +20,7 @@
 
 @end
 
-@interface ChangeRule :NSObject
+@interface ChangeRule :NSObject<NSCoding, NSCopying>
 @property (nonatomic , copy) NSString              * RuleRestriction;
 @property (nonatomic , copy) NSString              * RuleNote;
 @property (nonatomic , copy) NSString              * RuleRemarks;
@@ -29,13 +29,13 @@
 
 @end
 
-@interface FeeInfoList :NSObject
+@interface FeeInfoList :NSObject<NSCoding, NSCopying>
 @property (nonatomic , copy) NSString              * FeeType;
 @property (nonatomic , assign) NSInteger              Fee;
 
 @end
 
-@interface EndorseRule :NSObject
+@interface EndorseRule :NSObject<NSCoding, NSCopying>
 @property (nonatomic , copy) NSString              * RuleRestriction;
 @property (nonatomic , copy) NSString              * RuleNote;
 @property (nonatomic , copy) NSString              * RuleRemarks;
@@ -44,7 +44,7 @@
 
 @end
 
-@interface RefundRule :NSObject
+@interface RefundRule :NSObject<NSCoding, NSCopying>
 @property (nonatomic , copy) NSString              * RuleRestriction;
 @property (nonatomic , copy) NSString              * RuleNote;
 @property (nonatomic , copy) NSString              * RuleRemarks;
@@ -53,7 +53,7 @@
 
 @end
 
-@interface PolicyRuleList :NSObject
+@interface PolicyRuleList :NSObject<NSCoding, NSCopying>
 @property (nonatomic , copy) NSString              * TravelerCategory;
 @property (nonatomic , assign) BOOL              CanUpgrade;
 @property (nonatomic , assign) NSInteger              Index;
@@ -67,7 +67,7 @@
 
 @end
 
-@interface PriceInfo_Child :NSObject
+@interface PriceInfo_Child :NSObject<NSCoding, NSCopying>
 @property (nonatomic , assign) NSInteger              Rate;
 @property (nonatomic , assign) NSInteger              TravelerCategory;
 @property (nonatomic , assign) NSInteger              FDPrice;
@@ -82,13 +82,13 @@
 
 @end
 
-@interface AirLineShowEntity :NSObject
+@interface AirLineShowEntity :NSObject<NSCoding, NSCopying>
 @property (nonatomic , assign) NSInteger              Price;
 @property (nonatomic , copy) NSString              * SubClass;
 
 @end
 
-@interface PriceInfo_Adult :NSObject
+@interface PriceInfo_Adult :NSObject<NSCoding, NSCopying>
 @property (nonatomic , assign) CGFloat              Rate;
 @property (nonatomic , assign) NSInteger              TravelerCategory;
 @property (nonatomic , assign) NSInteger              FDPrice;
@@ -103,7 +103,7 @@
 
 @end
 
-@interface CabinInfoList :NSObject
+@interface CabinInfoList :NSObject<NSCoding, NSCopying>
 @property (nonatomic , copy) NSString              * BookingClass;
 @property (nonatomic , assign) BOOL              ApplyChild;
 @property (nonatomic , assign) BOOL              IsSupportChildPolicy;
@@ -129,14 +129,14 @@
 
 @end
 
-@interface StandardPriceList :NSObject
+@interface StandardPriceList :NSObject<NSCoding, NSCopying>
 @property (nonatomic , assign) NSInteger              Price;
 @property (nonatomic , copy) NSString              * CabinClass;
 
 @end
 
 
-@interface LowestPriceCabin :NSObject
+@interface LowestPriceCabin :NSObject<NSCoding, NSCopying>
 @property (nonatomic , copy) NSString              * BookingClass;
 @property (nonatomic , assign) BOOL              ApplyChild;
 @property (nonatomic , assign) BOOL              IsSupportChildPolicy;
@@ -162,7 +162,7 @@
 
 @end
 
-@interface PunctualityRateDetail :NSObject
+@interface PunctualityRateDetail :NSObject<NSCoding, NSCopying>
 @property (nonatomic , assign) NSInteger              Cancel;
 @property (nonatomic , assign) NSInteger              Delay60To90;
 @property (nonatomic , assign) CGFloat              OnTime;
@@ -171,7 +171,7 @@
 
 @end
 
-@interface FlightInfoList :NSObject
+@interface FlightInfoList :NSObject<NSCoding, NSCopying>
 @property (nonatomic , copy) NSString              * DeptAirportCode;
 @property (nonatomic , copy) NSString              * DeptDateTime;
 @property (nonatomic , assign) BOOL              IsFlyMan;
@@ -206,24 +206,24 @@
 
 @end
 
-@interface FlightListGroupList :NSObject
+@interface FlightListGroupList :NSObject<NSCoding, NSCopying>
 @property (nonatomic , strong) NSArray<FlightInfoList *>              * FlightInfoList;
 @property (nonatomic , assign) NSInteger              OrigDestSeqID;
 
 @end
 
-@interface ResponseBody :NSObject
+@interface ResponseBody :NSObject<NSCoding, NSCopying>
 @property (nonatomic , strong) NSArray<PolicyRuleList *>              * PolicyRuleList;
 @property (nonatomic , strong) NSArray<FlightListGroupList *>              * FlightListGroupList;
 @property (nonatomic , assign) BOOL              IsCompleted;
 
 @end
 
-@interface ModelObjectSuper : NSObject
+@interface ModelObjectSuper : NSObject<NSCoding, NSCopying>
 @property (nonatomic , strong) Head              * Head;
 @end
 
-@interface ModelObject :ModelObjectSuper
+@interface ModelObject :ModelObjectSuper<NSCoding, NSCopying>
 @property (nonatomic , strong) ResponseBody              * ResponseBody;
 
 @end

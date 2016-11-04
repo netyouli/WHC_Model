@@ -6,14 +6,16 @@ WHC_Model
 [![Pod License](http://img.shields.io/cocoapods/l/WHC_Model.svg?style=flat)](https://opensource.org/licenses/MIT)
 简介
 ==============
-- **高效**: 深度递归高效解析算法
+- **高效**: 深度递归高性能解析架构
 - **继承**: 支持model类继承其他model类
 - **安全**: 自动处理json中的null
 - **优势**: 高容错能力(model类属性名称和json里key名称不区分大小写)
-- **强大**: 支持自定义model类前缀(避免相同类名导致编译冲突错误)
+- **强大**: 支持自定义模型类属性名称以及类型
 - **特性**: 支持反射指定json路径key来解析指定的节点json对象
 - **嵌套**: 支持json或者model类的无限嵌套,json->model ,model->json的转换
-- **强悍**: 只需要两个文件(500来行代码)
+- **附加**: 支持模型对象归档解档以及copy
+- **强悍**: 只需要两个文件
+==============
 - **咨询**: 712641411
 - **作者**: 吴海超
 
@@ -25,9 +27,15 @@ WHC_Model
 集成
 ==============
 * 使用CocoaPods:
-  -  pod 'WHC_Model', '~> 1.0.0'
+  -  pod 'WHC_Model', '~> 1.2.0'
 * 手工集成:
   -  导入文件夹WHC_ModelKit
+
+性能测试
+==============
+Time lost (Benchmark 1000 times)
+![](https://github.com/netyouli/WHC_Model/blob/master/images/os.gif)
+![](https://github.com/netyouli/WHC_Model/blob/master/images/os.gif)
 
 用法
 ==============
@@ -35,39 +43,54 @@ WHC_Model
 ###一,json -> model
 ```Objective-C
 /// jsonString 是一个比较复杂3000行的json文件，具体参考demo
-    ModelObject * model = [ModelObject modelWithJson:jsonString];
+    ModelObject * model = [ModelObject whc_ModelWithJson:jsonString];
     NSLog(@"model = %@\n\n\n",model);
-
 ```
 
 ###二,model -> json
 ```Objective-C
-    NSString * modelString = [model json];
+    NSString * modelString = [model whc_Json];
     NSLog(@"modelString = %@\n\n\n",modelString);
 ```
 
 ###三,model - > NSDictionary
 ```Objective-C
-    NSDictionary * modelDict = [model dictionary];
+    NSDictionary * modelDict = [model whc_Dictionary];
     NSLog(@"modelDict = %@\n\n\n",modelDict);
 ```
 
 ###四,指定路径只解析Head对象
 ```Objective-C
-    Head * head = [Head modelWithJson:jsonString keyPath:@"Head"];
+    Head * head = [Head whc_ModelWithJson:jsonString keyPath:@"Head"];
     NSLog(@"head = %@\n\n\n",head);
 ```
 
 ###五,指定路径只解析ResponseBody对象
 ```Objective-C
-    ResponseBody * body = [ResponseBody modelWithJson:jsonString keyPath:@"ResponseBody"];
+    ResponseBody * body = [ResponseBody whc_ModelWithJson:jsonString keyPath:@"ResponseBody"];
     NSLog(@"ResponseBody = %@\n\n\n",body);
 ```
 
 ###六,指定路径只解析PolicyRuleList集合中第一个对象
 ```Objective-C
-    PolicyRuleList * rule = [PolicyRuleList modelWithJson:jsonString keyPath:@"ResponseBody.PolicyRuleList[0]"];
+    PolicyRuleList * rule = [PolicyRuleList whc_ModelWithJson:jsonString keyPath:@"ResponseBody.PolicyRuleList[0]"];
     NSLog(@"rule = %@\n\n\n",rule);
+```
+###七,归档对象
+```Objective-C
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:body];
+    NSLog(@"data = %@\n\n\n",data);
+```
+
+###八,解归档对象
+```Objective-C
+    ResponseBody * body = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    NSLog(@"body = %@\n\n\n",body);
+```
+###九,模型对象复制
+```Objective-C
+    ResponseBody * copyBody = body.copy;
+    NSLog(@"copyBody = %@",copyBody);
 ```
 
 推荐
@@ -78,91 +101,47 @@ WHC_Model
 ==============
 ```Objective-C
 
-###pragma mark - json转模型对象 Api -
+#pragma mark - json转模型对象 Api -
 
-/** 说明: 把json数组解析为模型对象数组
- *@param array:json数组
- *@return 模型对象数组
- */
-+ (NSArray*)modelWithArray:(NSArray*)array;
-
-/** 说明: 把json数组解析为模型对象数组
- *@param array:json数组
- *@return 模型对象数组
- */
-
-+ (NSArray*)modelWithArray:(NSArray*)array classPrefix:(NSString *)prefix;
-
-/** 说明:把json字典解析为模型对象
- *@param dictionary:json字典
- *@param prefix: 自定义模型类前缀名称
+/** 说明:把json解析为模型对象
+ *@param json :json数据对象
  *@return 模型对象
  */
-+ (id)modelWithDictionary:(NSDictionary*)dictionary;
++ (id)whc_ModelWithJson:(id)json;
 
-/** 说明:把json字典解析为模型对象
- *@param dictionary:json字典
- *@param prefix: 自定义模型类前缀名称
+/** 说明:把json解析为模型对象
+ *@param json :json数据对象
+ *@param keyPath :json key的路径
  *@return 模型对象
  */
 
-+ (id)modelWithDictionary:(NSDictionary*)dictionary classPrefix:(NSString *)prefix;
++ (id)whc_ModelWithJson:(id)json keyPath:(NSString *)keyPath;
 
-/** 说明:把json解析为模型对象
- *@param json :json 字符串
- *@return 模型对象
- */
-+ (id)modelWithJson:(NSString *)json;
 
-/** 说明:把json解析为模型对象
- *@param json :json 字符串
- *@param prefix: 自定义模型类前缀名称
- *@return 模型对象
- */
-
-+ (id)modelWithJson:(NSString *)json classPrefix:(NSString *)prefix;
-
-/** 说明:把json解析为模型对象
- *@param jsonData :jsonData json数据对象
- *@return 模型对象
- */
-+ (id)modelWithJsonData:(NSData *)jsonData;
-
-/** 说明:把json解析为模型对象
- *@param jsonData :jsonData json数据对象
- *@param prefix: 自定义模型类前缀名称
- *@return 模型对象
- */
-+ (id)modelWithJsonData:(NSData *)jsonData classPrefix:(NSString *)prefix;
-
-/** 说明:把json解析为模型对象
-*@param jsonData :jsonData json数据对象
-*@param keyPath: json key的路径
-*@return 模型对象
-*/
-
-+ (id)modelWithJsonData:(NSData *)jsonData keyPath:(NSString *)keyPath;
-
-/** 说明:把json解析为模型对象
-*@param jsonData :jsonData json数据对象
-*@param prefix: 自定义模型类前缀名称
-*@return 模型对象
-*/
-+ (id)modelWithJsonData:(NSData *)jsonData classPrefix:(NSString *)prefix;
-
-###pragma mark - 模型对象转json Api -
+#pragma mark - 模型对象转json Api -
 
 /** 说明:把模型对象转换为字典
  *@return 字典对象
  */
 
-- (NSDictionary *)dictionary;
+- (NSDictionary *)whc_Dictionary;
 
 /** 说明:把模型对象转换为json字符串
  *@return json字符串
  */
 
-- (NSString *)json;
+- (NSString *)whc_Json;
+
+#pragma mark - 模型对象序列化 Api -
+
+/// 复制模型对象
+- (id)whc_Copy;
+
+/// 序列化模型对象
+- (void)whc_Encode:(NSCoder *)aCoder;
+
+/// 反序列化模型对象
+- (void)whc_Decode:(NSCoder *)aDecoder;
 ```
 ## <a id="期待"></a>期待
 
