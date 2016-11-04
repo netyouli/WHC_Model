@@ -23,7 +23,7 @@ Time lost (Benchmark 1000 times)
 <img src = "https://github.com/netyouli/WHC_Model/blob/master/Result/b.png">
 <img src = "https://github.com/netyouli/WHC_Model/blob/master/Result/a.png">
 
-* 查看性能测试功能： Benchmark/ModelBenchmark.xcodeproj 
+* 查看性能测试请运行项目： Benchmark/ModelBenchmark.xcodeproj 
 
 要求
 ==============
@@ -33,7 +33,7 @@ Time lost (Benchmark 1000 times)
 集成
 ==============
 * 使用CocoaPods:
-  -  pod 'WHC_Model', '~> 1.2.0'
+  -  pod 'WHC_Model', '~> 1.3.0'
 * 手工集成:
   -  导入文件夹WHC_ModelKit
 
