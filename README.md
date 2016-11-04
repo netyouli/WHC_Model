@@ -15,9 +15,14 @@ WHC_Model
 - **嵌套**: 支持json或者model类的无限嵌套,json->model ,model->json的转换
 - **附加**: 支持模型对象归档解档以及copy
 - **强悍**: 只需要两个文件
-==============
 - **咨询**: 712641411
 - **作者**: 吴海超
+
+性能测试
+==============
+Time lost (Benchmark 1000 times)
+![](https://github.com/netyouli/WHC_Model/tree/master/Result/b.png)
+![](https://github.com/netyouli/WHC_Model/tree/master/Result/a.png)
 
 要求
 ==============
@@ -30,12 +35,6 @@ WHC_Model
   -  pod 'WHC_Model', '~> 1.2.0'
 * 手工集成:
   -  导入文件夹WHC_ModelKit
-
-性能测试
-==============
-Time lost (Benchmark 1000 times)
-![](https://github.com/netyouli/WHC_Model/blob/master/images/os.gif)
-![](https://github.com/netyouli/WHC_Model/blob/master/images/os.gif)
 
 用法
 ==============
