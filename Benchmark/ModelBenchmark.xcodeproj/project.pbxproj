@@ -23,8 +23,6 @@
 		D9B194851BAC737000F93933 /* user.json in Resources */ = {isa = PBXBuildFile; fileRef = D9B1947C1BAC737000F93933 /* user.json */; };
 		D9B194861BAC737000F93933 /* weibo.json in Resources */ = {isa = PBXBuildFile; fileRef = D9B1947D1BAC737000F93933 /* weibo.json */; };
 		D9EB031C1BD5F96100B3E0F5 /* Cartfile.bak in Resources */ = {isa = PBXBuildFile; fileRef = D9EB031B1BD5F96100B3E0F5 /* Cartfile.bak */; };
-		D9EB032A1BD64C3200B3E0F5 /* NSObject+YYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D9EB03261BD64C3200B3E0F5 /* NSObject+YYModel.m */; };
-		D9EB032B1BD64C3200B3E0F5 /* YYClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D9EB03281BD64C3200B3E0F5 /* YYClassInfo.m */; };
 		D9EB03DC1BD64D1E00B3E0F5 /* FEMAssignmentPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = D9EB03531BD64D1D00B3E0F5 /* FEMAssignmentPolicy.m */; };
 		D9EB03DD1BD64D1E00B3E0F5 /* FEMRelationshipAssignmentContext.m in Sources */ = {isa = PBXBuildFile; fileRef = D9EB03561BD64D1D00B3E0F5 /* FEMRelationshipAssignmentContext.m */; };
 		D9EB03DE1BD64D1E00B3E0F5 /* FEMManagedObjectCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D9EB03591BD64D1D00B3E0F5 /* FEMManagedObjectCache.m */; };
@@ -81,6 +79,8 @@
 		D9EB04111BD64D1E00B3E0F5 /* NSString+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = D9EB03DB1BD64D1E00B3E0F5 /* NSString+MJExtension.m */; };
 		FE049B461DCADC68004B899E /* NSObject+WHC_Model.m in Sources */ = {isa = PBXBuildFile; fileRef = FE049B451DCADC68004B899E /* NSObject+WHC_Model.m */; };
 		FE049B491DCB433E004B899E /* WHCWeiboModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FE049B481DCB433E004B899E /* WHCWeiboModel.m */; };
+		FE42448B1DCD7EAD007C79E0 /* NSObject+YYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FE4244871DCD7EAD007C79E0 /* NSObject+YYModel.m */; };
+		FE42448C1DCD7EAD007C79E0 /* YYClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = FE4244891DCD7EAD007C79E0 /* YYClassInfo.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -126,11 +126,6 @@
 		D9EB02B61BD4E4B200B3E0F5 /* ModelBenchmark-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ModelBenchmark-Bridging-Header.h"; sourceTree = "<group>"; };
 		D9EB02C41BD4E81700B3E0F5 /* GithubUserBenchmark.swift.bak */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GithubUserBenchmark.swift.bak; sourceTree = "<group>"; };
 		D9EB031B1BD5F96100B3E0F5 /* Cartfile.bak */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile.bak; sourceTree = "<group>"; };
-		D9EB03251BD64C3200B3E0F5 /* NSObject+YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YYModel.h"; sourceTree = "<group>"; };
-		D9EB03261BD64C3200B3E0F5 /* NSObject+YYModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YYModel.m"; sourceTree = "<group>"; };
-		D9EB03271BD64C3200B3E0F5 /* YYClassInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYClassInfo.h; sourceTree = "<group>"; };
-		D9EB03281BD64C3200B3E0F5 /* YYClassInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYClassInfo.m; sourceTree = "<group>"; };
-		D9EB03291BD64C3200B3E0F5 /* YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYModel.h; sourceTree = "<group>"; };
 		D9EB03521BD64D1D00B3E0F5 /* FEMAssignmentPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FEMAssignmentPolicy.h; sourceTree = "<group>"; };
 		D9EB03531BD64D1D00B3E0F5 /* FEMAssignmentPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEMAssignmentPolicy.m; sourceTree = "<group>"; };
 		D9EB03541BD64D1D00B3E0F5 /* FEMRelationshipAssignmentContext+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FEMRelationshipAssignmentContext+Internal.h"; sourceTree = "<group>"; };
@@ -256,6 +251,11 @@
 		FE049B451DCADC68004B899E /* NSObject+WHC_Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+WHC_Model.m"; sourceTree = "<group>"; };
 		FE049B471DCB433E004B899E /* WHCWeiboModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHCWeiboModel.h; sourceTree = "<group>"; };
 		FE049B481DCB433E004B899E /* WHCWeiboModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHCWeiboModel.m; sourceTree = "<group>"; };
+		FE4244861DCD7EAD007C79E0 /* NSObject+YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YYModel.h"; sourceTree = "<group>"; };
+		FE4244871DCD7EAD007C79E0 /* NSObject+YYModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YYModel.m"; sourceTree = "<group>"; };
+		FE4244881DCD7EAD007C79E0 /* YYClassInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYClassInfo.h; sourceTree = "<group>"; };
+		FE4244891DCD7EAD007C79E0 /* YYClassInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYClassInfo.m; sourceTree = "<group>"; };
+		FE42448A1DCD7EAD007C79E0 /* YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYModel.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -289,11 +289,11 @@
 			isa = PBXGroup;
 			children = (
 				FE049B431DCADC68004B899E /* WHC_Model */,
-				D9EB03241BD64C3200B3E0F5 /* YYModel */,
 				D9EB039F1BD64D1D00B3E0F5 /* Mantle */,
 				D9EB03851BD64D1D00B3E0F5 /* JSONModel */,
 				D9EB034F1BD64D1D00B3E0F5 /* FastEasyMapping */,
 				D9EB03C41BD64D1E00B3E0F5 /* MJExtension */,
+				FE4244851DCD7EAD007C79E0 /* YYModel */,
 				D9B193821BAC714D00F93933 /* AppDelegate.h */,
 				D9B193831BAC714D00F93933 /* AppDelegate.m */,
 				D9B193851BAC714D00F93933 /* ViewController.h */,
@@ -343,19 +343,6 @@
 				D9EB031B1BD5F96100B3E0F5 /* Cartfile.bak */,
 			);
 			name = Swift;
-			sourceTree = "<group>";
-		};
-		D9EB03241BD64C3200B3E0F5 /* YYModel */ = {
-			isa = PBXGroup;
-			children = (
-				D9EB03291BD64C3200B3E0F5 /* YYModel.h */,
-				D9EB03251BD64C3200B3E0F5 /* NSObject+YYModel.h */,
-				D9EB03261BD64C3200B3E0F5 /* NSObject+YYModel.m */,
-				D9EB03271BD64C3200B3E0F5 /* YYClassInfo.h */,
-				D9EB03281BD64C3200B3E0F5 /* YYClassInfo.m */,
-			);
-			name = YYModel;
-			path = ../../YYModel;
 			sourceTree = "<group>";
 		};
 		D9EB034F1BD64D1D00B3E0F5 /* FastEasyMapping */ = {
@@ -648,6 +635,18 @@
 			path = WHC_Model;
 			sourceTree = "<group>";
 		};
+		FE4244851DCD7EAD007C79E0 /* YYModel */ = {
+			isa = PBXGroup;
+			children = (
+				FE4244861DCD7EAD007C79E0 /* NSObject+YYModel.h */,
+				FE4244871DCD7EAD007C79E0 /* NSObject+YYModel.m */,
+				FE4244881DCD7EAD007C79E0 /* YYClassInfo.h */,
+				FE4244891DCD7EAD007C79E0 /* YYClassInfo.m */,
+				FE42448A1DCD7EAD007C79E0 /* YYModel.h */,
+			);
+			path = YYModel;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -739,6 +738,7 @@
 				D9EB03E11BD64D1E00B3E0F5 /* FEMMapping.m in Sources */,
 				D9EB04081BD64D1E00B3E0F5 /* MJExtensionConst.m in Sources */,
 				D9EB040E1BD64D1E00B3E0F5 /* NSObject+MJCoding.m in Sources */,
+				FE42448C1DCD7EAD007C79E0 /* YYClassInfo.m in Sources */,
 				D9EB03EC1BD64D1E00B3E0F5 /* FEMTypeIntrospection.m in Sources */,
 				D9EB040F1BD64D1E00B3E0F5 /* NSObject+MJKeyValue.m in Sources */,
 				D9EB04101BD64D1E00B3E0F5 /* NSObject+MJProperty.m in Sources */,
@@ -768,9 +768,7 @@
 				D9EB04051BD64D1E00B3E0F5 /* NSValueTransformer+MTLInversionAdditions.m in Sources */,
 				D9EB03E81BD64D1E00B3E0F5 /* NSArray+FEMPropertyRepresentation.m in Sources */,
 				D9EB03DF1BD64D1E00B3E0F5 /* FEMDeserializer.m in Sources */,
-				D9EB032A1BD64C3200B3E0F5 /* NSObject+YYModel.m in Sources */,
 				D9EB03E51BD64D1E00B3E0F5 /* FEMObjectStore.m in Sources */,
-				D9EB032B1BD64C3200B3E0F5 /* YYClassInfo.m in Sources */,
 				D9B1947F1BAC737000F93933 /* GitHubUser.m in Sources */,
 				D9B194821BAC737000F93933 /* MTWeiboModel.m in Sources */,
 				D9EB03E91BD64D1E00B3E0F5 /* NSObject+FEMKVCExtension.m in Sources */,
@@ -791,6 +789,7 @@
 				D9B194811BAC737000F93933 /* FEWeiboModel.m in Sources */,
 				D9EB03FB1BD64D1E00B3E0F5 /* MTLModel.m in Sources */,
 				D9EB03FE1BD64D1E00B3E0F5 /* MTLValueTransformer.m in Sources */,
+				FE42448B1DCD7EAD007C79E0 /* NSObject+YYModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

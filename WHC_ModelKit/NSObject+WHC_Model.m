@@ -55,6 +55,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 @property (nonatomic, copy)Class  class;
 @property (nonatomic, assign) WHC_TYPE type;
 @property (nonatomic, assign) SEL setter;
+@property (nonatomic, assign) SEL getter;
 @end
 @implementation WHC_ModelPropertyInfo
 
@@ -82,26 +83,62 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 
 @implementation NSObject (WHC_Model)
 
-#pragma mark - 模型对象序列化 Api -
+#pragma mark - 枚举类属性列表 -
 
-- (id)whc_Copy {
-    id newSelf = self.class.new;
++ (void)whc_EnumeratePropertyNameUsingBlock:(void (NS_NOESCAPE ^)(NSString * propertyName, NSUInteger index, BOOL * stop))block {
     unsigned int propertyCount = 0;
-    objc_property_t * properties = class_copyPropertyList([self class], &propertyCount);
+    BOOL stop = NO;
+    objc_property_t * properties = class_copyPropertyList(self, &propertyCount);
     for (unsigned int i = 0; i < propertyCount; i++) {
         objc_property_t property = properties[i];
         const char * name = property_getName(property);
-        NSString * propertyName = [NSString stringWithUTF8String:name];
+        block([NSString stringWithUTF8String:name],i,&stop);
+        if (stop) break;
+    }
+    free(properties);
+}
+
++ (void)whc_EnumeratePropertyAttributesUsingBlock:(void (NS_NOESCAPE ^)(NSString * propertyName,objc_property_t property, NSUInteger index, BOOL * stop))block {
+    unsigned int propertyCount = 0;
+    BOOL stop = NO;
+    objc_property_t * properties = class_copyPropertyList(self, &propertyCount);
+    for (unsigned int i = 0; i < propertyCount; i++) {
+        objc_property_t property = properties[i];
+        const char * name = property_getName(property);
+        block([NSString stringWithUTF8String:name],property,i,&stop);
+        if (stop) break;
+    }
+    free(properties);
+}
+
+#pragma mark - 模型对象序列化 Api -
+
+- (void)copySuperObject:(id)newSelf {
+    Class superClass = class_getSuperclass(self.class);
+    if (superClass != nil &&
+        superClass != [NSObject class]) {
+        NSObject * superObject = superClass.new;
+        [superClass whc_EnumeratePropertyNameUsingBlock:^(NSString *propertyName, NSUInteger index, BOOL *stop) {
+            [superObject setValue:[self valueForKey:propertyName] forKey:propertyName];
+            [newSelf setValue:[self valueForKey:propertyName] forKey:propertyName];
+        }];
+        [superObject copySuperObject:newSelf];
+    }
+}
+
+- (id)whc_Copy {
+    id newSelf = self.class.new;
+    [self copySuperObject:newSelf];
+    [self.class whc_EnumeratePropertyAttributesUsingBlock:^(NSString *propertyName, objc_property_t property, NSUInteger index, BOOL *stop) {
         NSDictionary <NSString *, WHC_ModelPropertyInfo *> * propertyInfoMap = [self.class getModelPropertyDictionary];
         WHC_ModelPropertyInfo * propertyInfo = nil;
         if (propertyInfoMap != nil) {
             propertyInfo = propertyInfoMap[propertyName];
         }
         if (propertyInfo == nil) {
-            const char * attributes = property_getAttributes(property);
-            NSString * attr = [NSString stringWithUTF8String:attributes];
             propertyInfo = [WHC_ModelPropertyInfo new];
-            propertyInfo.type = [self.class parserTypeWithAttr:attr];
+            const char * attributes = property_getAttributes(property);
+            propertyInfo.type = [self.class parserTypeWithAttr:[NSString stringWithUTF8String:attributes]];
             propertyInfo.setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
         }
         id value = [self valueForKey:propertyName];
@@ -135,33 +172,39 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
             }
                 break;
         }
-    }
-    free(properties);
+    }];
     return newSelf;
 }
 
 - (void)whc_Encode:(NSCoder *)aCoder {
-    unsigned int propertyCount = 0;
-    objc_property_t * properties = class_copyPropertyList([self class], &propertyCount);
-    for (unsigned int i = 0; i < propertyCount; i++) {
-        objc_property_t property = properties[i];
-        const char * name = property_getName(property);
-        NSString * propertyName = [NSString stringWithUTF8String:name];
+    Class superClass = class_getSuperclass(self.class);
+    if (superClass != nil &&
+        superClass != [NSObject class]) {
+        NSObject * superObject = superClass.new;
+        [superClass whc_EnumeratePropertyNameUsingBlock:^(NSString *propertyName, NSUInteger index, BOOL *stop) {
+            [superObject setValue:[self valueForKey:propertyName] forKey:propertyName];
+        }];
+        [superObject whc_Encode:aCoder];
+    }
+    [self.class whc_EnumeratePropertyNameUsingBlock:^(NSString *propertyName, NSUInteger index, BOOL *stop) {
         id value = [self valueForKey:propertyName];
         if (value != nil) {
             [aCoder encodeObject:value forKey:propertyName];
         }
-    }
-    free(properties);
+    }];
 }
 
 - (void)whc_Decode:(NSCoder *)aDecoder {
-    unsigned int propertyCount = 0;
-    objc_property_t * properties = class_copyPropertyList([self class], &propertyCount);
-    for (unsigned int i = 0; i < propertyCount; i++) {
-        objc_property_t property = properties[i];
-        const char * name = property_getName(property);
-        NSString * propertyName = [NSString stringWithUTF8String:name];
+    Class superClass = class_getSuperclass(self.class);
+    if (superClass != nil &&
+        superClass != [NSObject class]) {
+        NSObject * superObject = superClass.new;
+        [superObject whc_Decode:aDecoder];
+        [superClass whc_EnumeratePropertyNameUsingBlock:^(NSString *propertyName, NSUInteger index, BOOL *stop) {
+            [self setValue:[superObject valueForKey:propertyName] forKey:propertyName];
+        }];
+    }
+    [self.class whc_EnumeratePropertyAttributesUsingBlock:^(NSString *propertyName, objc_property_t property, NSUInteger index, BOOL *stop) {
         id value = [aDecoder decodeObjectForKey:propertyName];
         if (value != nil) {
             NSDictionary <NSString *, WHC_ModelPropertyInfo *> * propertyInfoMap = [self.class getModelPropertyDictionary];
@@ -171,10 +214,9 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
             }
             if ([value isKindOfClass:[NSNumber class]]) {
                 if (propertyInfo == nil) {
-                    const char * attributes = property_getAttributes(property);
-                    NSString * attr = [NSString stringWithUTF8String:attributes];
                     propertyInfo = [WHC_ModelPropertyInfo new];
-                    propertyInfo.type = [self.class parserTypeWithAttr:attr];
+                    const char * attributes = property_getAttributes(property);
+                    propertyInfo.type = [self.class parserTypeWithAttr:[NSString stringWithUTF8String:attributes]];
                     propertyInfo.setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
                 }
                 switch (propertyInfo.type) {
@@ -208,8 +250,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                 }
             }
         }
-    }
-    free(properties);
+    }];
 }
 
 #pragma mark - json转模型对象 Api -
@@ -303,31 +344,24 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
     if (superClass != nil &&
         superClass != [NSObject class]) {
         NSObject * superObject = superClass.new;
-        unsigned int propertyCount = 0;
-        objc_property_t * properties = class_copyPropertyList(self.superclass, &propertyCount);
-        for (unsigned int i = 0; i < propertyCount; i++) {
-            objc_property_t property = properties[i];
-            const char * name = property_getName(property);
-            NSString * propertyName = [NSString stringWithUTF8String:name];
+        [superClass whc_EnumeratePropertyNameUsingBlock:^(NSString *propertyName, NSUInteger index, BOOL *stop) {
             [superObject setValue:[self valueForKey:propertyName] forKey:propertyName];
-        }
+        }];
         [jsonDictionary setDictionary:[superObject whc_Dictionary]];
     }
     NSDictionary <NSString *, WHC_ModelPropertyInfo *> * propertyInfoMap = [self.class getModelPropertyDictionary];
-    unsigned int propertyCount = 0;
-    objc_property_t * properties = class_copyPropertyList([self class], &propertyCount);
-    for (unsigned int i = 0; i < propertyCount; i++) {
-        objc_property_t property = properties[i];
-        const char * name = property_getName(property);
-        NSString * propertyName = [NSString stringWithUTF8String:name];
+    [self.class whc_EnumeratePropertyAttributesUsingBlock:^(NSString *propertyName, objc_property_t property, NSUInteger index, BOOL *stop) {
         WHC_ModelPropertyInfo * propertyInfo = nil;
         if (propertyInfoMap != nil) {
             propertyInfo = propertyInfoMap[propertyName];
+            if (propertyInfo.getter == nil) {
+                propertyInfo.getter = NSSelectorFromString(propertyName);
+            }
         }
         if (propertyInfo) {
             switch (propertyInfo.type) {
                 case _Data: {
-                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, NSSelectorFromString(propertyName));
+                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
                     if (value) {
                         if ([value isKindOfClass:[NSData class]]) {
                             [jsonDictionary setObject:[[NSString alloc] initWithData:value encoding:NSUTF8StringEncoding] forKey:propertyName];
@@ -340,7 +374,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                 }
                     break;
                 case _Date: {
-                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, NSSelectorFromString(propertyName));
+                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
                     if (value) {
                         if ([value isKindOfClass:[NSString class]]) {
                             [jsonDictionary setObject:value forKey:propertyName];
@@ -358,7 +392,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                     break;
                 case _String:
                 case _Number: {
-                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, NSSelectorFromString(propertyName));
+                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
                     if (value != nil) {
                         [jsonDictionary setObject:value forKey:propertyName];
                     }else {
@@ -367,28 +401,48 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                 }
                     break;
                 case _Model: {
-                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, NSSelectorFromString(propertyName));
+                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
                     [jsonDictionary setObject:[value whc_Dictionary] forKey:propertyName];
                 }
                     break;
                 case _Array: {
-                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, NSSelectorFromString(propertyName));
+                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
                     [jsonDictionary setObject:[self parserArrayEngine:value] forKey:propertyName];
                 }
                     break;
                 case _Dictionary: {
-                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, NSSelectorFromString(propertyName));
+                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
                     [jsonDictionary setObject:[self parserDictionaryEngine:value] forKey:propertyName];
                 }
                     break;
-                case _Char:
-                case _Float:
-                case _Double:
-                case _Boolean:
-                case _Integer:
+                case _Char: {
+                    char value = ((char (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    [jsonDictionary setObject:[NSNumber numberWithChar:value] forKey:propertyName];
+                }
+                    break;
+                case _Float: {
+                    Float64 value = ((Float64 (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    [jsonDictionary setObject:[NSNumber numberWithFloat:value] forKey:propertyName];
+                }
+                    break;
+                case _Double: {
+                    double value = ((double (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    [jsonDictionary setObject:[NSNumber numberWithDouble:value] forKey:propertyName];
+                }
+                    break;
+                case _Boolean: {
+                    BOOL value = ((BOOL (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    [jsonDictionary setObject:[NSNumber numberWithBool:value] forKey:propertyName];
+                }
+                    break;
+                case _Integer: {
+                    NSInteger value = ((NSInteger (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    [jsonDictionary setObject:[NSNumber numberWithInteger:value] forKey:propertyName];
+                }
+                    break;
                 case _UInteger: {
-                    id value = [self valueForKey:propertyName];
-                    [jsonDictionary setObject:value forKey:propertyName];
+                    NSUInteger value = ((NSUInteger (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    [jsonDictionary setObject:[NSNumber numberWithUnsignedInteger:value] forKey:propertyName];
                 }
                     break;
                 case _Null: {
@@ -399,9 +453,8 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                     break;
             }
         }else {
-            const char * propertyAttributes = property_getAttributes(property);
-            NSString * attributesString = [NSString stringWithUTF8String:propertyAttributes];
-            NSArray * attributesArray = [attributesString componentsSeparatedByString:@"\""];
+            const char * attributes = property_getAttributes(property);
+            NSArray * attributesArray = [[NSString stringWithUTF8String:attributes] componentsSeparatedByString:@"\""];
             if (attributesArray.count == 1) {
                 id value = [self valueForKey:propertyName];
                 [jsonDictionary setObject:value forKey:propertyName];
@@ -440,8 +493,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                 }
             }
         }
-    }
-    free(properties);
+    }];
     return jsonDictionary;
 }
 
@@ -449,7 +501,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 
 - (id)parserDictionaryEngine:(NSDictionary *)value {
     if (value == nil) return [NSNull new];
-    NSMutableDictionary * subJsonDictionary = [NSMutableDictionary dictionary];
+    NSMutableDictionary * subJsonDictionary = [NSMutableDictionary new];
     NSArray * allKey = value.allKeys;
     for (NSString * key in allKey) {
         id subValue = value[key];
@@ -469,7 +521,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
 
 - (id)parserArrayEngine:(NSArray *)value {
     if (value == nil) return [NSNull new];
-    NSMutableArray * subJsonArray = [NSMutableArray array];
+    NSMutableArray * subJsonArray = [NSMutableArray new];
     for (id subValue in value) {
         if ([subValue isKindOfClass:[NSString class]] ||
             [subValue isKindOfClass:[NSNumber class]]) {
@@ -491,16 +543,6 @@ static const char  WHC_ModelPropertyInfokey = '\0';
 static const char  WHC_ReplaceKeyValue = '\0';
 static const char  WHC_ReplacePropertyClass = '\0';
 static const char  WHC_ReplaceContainerElementClass = '\0';
-static const char  WHC_ModelClassMark = '\0';
-
-+ (BOOL)isModelMark {
-    NSNumber * mark = objc_getAssociatedObject(self, &WHC_ModelClassMark);
-    return mark != nil;
-}
-
-+ (void)setModelMark {
-    objc_setAssociatedObject(self, &WHC_ModelClassMark, @(YES), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
 
 + (NSDictionary <NSString *, Class> *)getContainerElementClassMapper {
     return objc_getAssociatedObject(self, &WHC_ReplaceContainerElementClass);

@@ -77,15 +77,15 @@
     NSLog(@"指定路径只解析PolicyRuleList集合中第一个对象 rule = %@\n\n\n",rule);
     
     /************** 归档对象 **************/
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:body];
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:model];
     
     /************** 解归档对象 **************/
-    ResponseBody * tempBody = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    NSLog(@"tempModel = %@",tempBody);
+    ModelObject * tempModel = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    NSLog(@"tempModel = %@",tempModel);
     
     /************** 复制对象 **************/
-    ResponseBody * copyBody = tempBody.copy;
-    NSLog(@"copyBody = %@",copyBody);
+    ModelObject * copyModel = model.copy;
+    NSLog(@"copyModel = %@",copyModel);
 }
 
 
