@@ -48,33 +48,43 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
     _Model = 1 << 11,
     _Data = 1 << 12,
     _Date = 1 << 13,
-    _Value = 1 << 14
+    _Value = 1 << 14,
+    _Url = 1 << 15,
+    _Set = 1 << 16,
+    _Unknown = 1 << 17
 };
 
-@interface WHC_ModelPropertyInfo : NSObject
-@property (nonatomic, copy)Class  class;
-@property (nonatomic, assign) WHC_TYPE type;
-@property (nonatomic, assign) SEL setter;
-@property (nonatomic, assign) SEL getter;
+@interface WHC_ModelPropertyInfo : NSObject {
+    @public
+    Class class;
+    WHC_TYPE type;
+    SEL setter;
+    SEL getter;
+}
 @end
 @implementation WHC_ModelPropertyInfo
 
-- (void)setClass:(Class)class {
-    _class = class;
-    if (class == [NSString class]) {_type = _String;}
-    else if (class == [NSDictionary class]) {_type = _Dictionary;}
-    else if (class == [NSArray class]) {_type = _Array;}
-    else if (class == [NSNumber class]) {_type = _Number;}
-    else if (class == [NSDate class]) {_type = _Date;}
-    else if (class == [NSValue class]) {_type = _Value;}
-    else if (class == [NSData class]) {_type = _Data;}
-    else {if (_class) _type = _Model; else _type = _Null;}
+- (void)setClass:(Class)_class valueClass:(Class)valueClass {
+    class = _class;
+    if (class == nil) {
+        type = _Null;
+        return;
+    }
+    if ([class isSubclassOfClass:[NSString class]]) {type = _String;}
+    else if ([class isSubclassOfClass:[NSDictionary class]]) {type = _Dictionary;}
+    else if ([valueClass isSubclassOfClass:[NSDictionary class]]) {type = _Model;}
+    else if ([class isSubclassOfClass:[NSArray class]]) {type = _Array;}
+    else if ([class isSubclassOfClass:[NSNumber class]]) {type = _Number;}
+    else if ([class isSubclassOfClass:[NSDate class]]) {type = _Date;}
+    else if ([class isSubclassOfClass:[NSValue class]]) {type = _Value;}
+    else if ([class isSubclassOfClass:[NSData class]]) {type = _Data;}
+    else {type = _Unknown;}
 }
 
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _type = _Null;
+        type = _Unknown;
     }
     return self;
 }
@@ -138,37 +148,37 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
         if (propertyInfo == nil) {
             propertyInfo = [WHC_ModelPropertyInfo new];
             const char * attributes = property_getAttributes(property);
-            propertyInfo.type = [self.class parserTypeWithAttr:[NSString stringWithUTF8String:attributes]];
-            propertyInfo.setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
+            propertyInfo->type = [self.class parserTypeWithAttr:[NSString stringWithUTF8String:attributes]];
+            propertyInfo->setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
         }
         id value = [self valueForKey:propertyName];
-        switch (propertyInfo.type) {
+        switch (propertyInfo->type) {
             case _Char: {
-                ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)newSelf, propertyInfo.setter, [value charValue]);
+                ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value charValue]);
             }
                 break;
             case _Float: {
-                ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)newSelf, propertyInfo.setter, [value floatValue]);
+                ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value floatValue]);
             }
                 break;
             case _Double: {
-                ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)newSelf, propertyInfo.setter, [value doubleValue]);
+                ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value doubleValue]);
             }
                 break;
             case _Boolean:{
-                ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)newSelf, propertyInfo.setter, [value boolValue]);
+                ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value boolValue]);
             }
                 break;
             case _Integer:{
-                ((void (*)(id, SEL, NSInteger))(void *) objc_msgSend)((id)newSelf, propertyInfo.setter, [value integerValue]);
+                ((void (*)(id, SEL, NSInteger))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value integerValue]);
             }
                 break;
             case _UInteger:{
-                ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)newSelf, propertyInfo.setter, [value unsignedIntegerValue]);
+                ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value unsignedIntegerValue]);
             }
                 break;
             default: {
-                ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)newSelf, propertyInfo.setter, value);
+                ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, value);
             }
                 break;
         }
@@ -216,34 +226,34 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                 if (propertyInfo == nil) {
                     propertyInfo = [WHC_ModelPropertyInfo new];
                     const char * attributes = property_getAttributes(property);
-                    propertyInfo.type = [self.class parserTypeWithAttr:[NSString stringWithUTF8String:attributes]];
-                    propertyInfo.setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
+                    propertyInfo->type = [self.class parserTypeWithAttr:[NSString stringWithUTF8String:attributes]];
+                    propertyInfo->setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
                 }
-                switch (propertyInfo.type) {
+                switch (propertyInfo->type) {
                     case _Char:
-                        ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)self, propertyInfo.setter, [value charValue]);
+                        ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value charValue]);
                         break;
                     case _Float:
-                        ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)self, propertyInfo.setter, [value floatValue]);
+                        ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value floatValue]);
                         break;
                     case _Double:
-                        ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)self, propertyInfo.setter, [value doubleValue]);
+                        ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value doubleValue]);
                         break;
                     case _Boolean:
-                        ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)self, propertyInfo.setter, [value boolValue]);
+                        ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value boolValue]);
                         break;
                     case _Integer:
-                        ((void (*)(id, SEL, NSInteger))(void *) objc_msgSend)((id)self, propertyInfo.setter, [value integerValue]);
+                        ((void (*)(id, SEL, NSInteger))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value integerValue]);
                         break;
                     case _UInteger:
-                        ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)self, propertyInfo.setter, [value unsignedIntegerValue]);
+                        ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value unsignedIntegerValue]);
                         break;
                     default:
                         break;
                 }
             }else {
                 if (propertyInfo != nil) {
-                    ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)self, propertyInfo.setter, value);
+                    ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)self, propertyInfo->setter, value);
                 }else {
                     SEL setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
                     ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)self, setter, value);
@@ -354,14 +364,14 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
         WHC_ModelPropertyInfo * propertyInfo = nil;
         if (propertyInfoMap != nil) {
             propertyInfo = propertyInfoMap[propertyName];
-            if (propertyInfo.getter == nil) {
-                propertyInfo.getter = NSSelectorFromString(propertyName);
-            }
         }
         if (propertyInfo) {
-            switch (propertyInfo.type) {
+            if (propertyInfo->getter == nil) {
+                propertyInfo->getter = NSSelectorFromString(propertyName);
+            }
+            switch (propertyInfo->type) {
                 case _Data: {
-                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
                     if (value) {
                         if ([value isKindOfClass:[NSData class]]) {
                             [jsonDictionary setObject:[[NSString alloc] initWithData:value encoding:NSUTF8StringEncoding] forKey:propertyName];
@@ -374,7 +384,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                 }
                     break;
                 case _Date: {
-                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
                     if (value) {
                         if ([value isKindOfClass:[NSString class]]) {
                             [jsonDictionary setObject:value forKey:propertyName];
@@ -392,7 +402,7 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                     break;
                 case _String:
                 case _Number: {
-                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
                     if (value != nil) {
                         [jsonDictionary setObject:value forKey:propertyName];
                     }else {
@@ -401,47 +411,47 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                 }
                     break;
                 case _Model: {
-                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
                     [jsonDictionary setObject:[value whc_Dictionary] forKey:propertyName];
                 }
                     break;
                 case _Array: {
-                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
                     [jsonDictionary setObject:[self parserArrayEngine:value] forKey:propertyName];
                 }
                     break;
                 case _Dictionary: {
-                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
                     [jsonDictionary setObject:[self parserDictionaryEngine:value] forKey:propertyName];
                 }
                     break;
                 case _Char: {
-                    char value = ((char (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    char value = ((char (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
                     [jsonDictionary setObject:[NSNumber numberWithChar:value] forKey:propertyName];
                 }
                     break;
                 case _Float: {
-                    Float64 value = ((Float64 (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    Float64 value = ((Float64 (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
                     [jsonDictionary setObject:[NSNumber numberWithFloat:value] forKey:propertyName];
                 }
                     break;
                 case _Double: {
-                    double value = ((double (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    double value = ((double (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
                     [jsonDictionary setObject:[NSNumber numberWithDouble:value] forKey:propertyName];
                 }
                     break;
                 case _Boolean: {
-                    BOOL value = ((BOOL (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    BOOL value = ((BOOL (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
                     [jsonDictionary setObject:[NSNumber numberWithBool:value] forKey:propertyName];
                 }
                     break;
                 case _Integer: {
-                    NSInteger value = ((NSInteger (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    NSInteger value = ((NSInteger (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
                     [jsonDictionary setObject:[NSNumber numberWithInteger:value] forKey:propertyName];
                 }
                     break;
                 case _UInteger: {
-                    NSUInteger value = ((NSUInteger (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    NSUInteger value = ((NSUInteger (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
                     [jsonDictionary setObject:[NSNumber numberWithUnsignedInteger:value] forKey:propertyName];
                 }
                     break;
@@ -462,15 +472,15 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                 id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, NSSelectorFromString(propertyName));
                 if (value != nil) {
                     Class classType = NSClassFromString(attributesArray[1]);
-                    if (classType == [NSString class]) {
+                    if ([classType isSubclassOfClass:[NSString class]]) {
                         [jsonDictionary setObject:value forKey:propertyName];
-                    }else if (classType == [NSNumber class]) {
+                    }else if ([classType isSubclassOfClass:[NSNumber class]]) {
                         [jsonDictionary setObject:value forKey:propertyName];
-                    }else if (classType == [NSDictionary class]) {
+                    }else if ([classType isSubclassOfClass:[NSDictionary class]]) {
                         [jsonDictionary setObject:[self parserDictionaryEngine:value] forKey:propertyName];
-                    }else if (classType == [NSArray class]) {
+                    }else if ([classType isSubclassOfClass:[NSArray class]]) {
                         [jsonDictionary setObject:[self parserArrayEngine:value] forKey:propertyName];
-                    }else if (classType == [NSDate class]) {
+                    }else if ([classType isSubclassOfClass:[NSDate class]]) {
                         if ([value isKindOfClass:[NSString class]]) {
                             [jsonDictionary setObject:value forKey:propertyName];
                         }else {
@@ -478,13 +488,13 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                             formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
                             [jsonDictionary setObject:[formatter stringFromDate:value] forKey:propertyName];
                         }
-                    }else if (classType == [NSData class]) {
+                    }else if ([classType isSubclassOfClass:[NSData class]]) {
                         if ([value isKindOfClass:[NSData class]]) {
                             [jsonDictionary setObject:[[NSString alloc] initWithData:value encoding:NSUTF8StringEncoding] forKey:propertyName];
                         }else {
                             [jsonDictionary setObject:value forKey:propertyName];
                         }
-                    }else if (classType == [NSValue class]) {
+                    }else if ([classType isSubclassOfClass:[NSValue class]] || [classType isSubclassOfClass:[NSSet class]] || [classType isSubclassOfClass:[NSURL class]] || [classType isSubclassOfClass:[NSError class]]) {
                     }else {
                         [jsonDictionary setObject:[value whc_Dictionary] forKey:propertyName];
                     }
@@ -586,24 +596,6 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
     [propertyInfo setObject:modelInfo forKey:property];
 }
 
-+ (WHC_TYPE)getTypeProperty:(const char *)attributes {
-    NSString * attr = [NSString stringWithUTF8String:attributes];
-    NSArray * arrayString = [attr componentsSeparatedByString:@"\""];
-    if (arrayString.count == 1) {
-        return [self parserTypeWithAttr:arrayString[0]];
-    }else {
-        Class class = NSClassFromString(arrayString[1]);
-        if (class == [NSDictionary class]) return _Dictionary;
-        if (class == [NSArray class]) return _Array;
-        if (class == [NSString class]) return _String;
-        if (class == [NSNumber class]) return _Number;
-        if (class == [NSData class]) return _Data;
-        if (class == [NSDate class]) return _Date;
-        if (class == [NSValue class]) return _Value;
-    }
-    return _Null;
-}
-
 + (NSString *)existproperty:(NSString *)property withObject:(NSObject *)object {
     objc_property_t property_t = class_getProperty(object.class, [property UTF8String]);
     if (property_t != NULL) {
@@ -672,7 +664,7 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
     return attr_type;
 }
 
-+ (WHC_ModelPropertyInfo *)classExistProperty:(NSString *)property withObject:(NSObject *)object {
++ (WHC_ModelPropertyInfo *)classExistProperty:(NSString *)property withObject:(NSObject *)object valueClass:(Class)valueClass {
     WHC_ModelPropertyInfo * propertyInfo = nil;
     objc_property_t property_t = class_getProperty(object.class, [property UTF8String]);
     if (property_t != NULL) {
@@ -681,9 +673,9 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
         NSArray * arrayString = [attr componentsSeparatedByString:@"\""];
         propertyInfo = [WHC_ModelPropertyInfo new];
         if (arrayString.count == 1) {
-            propertyInfo.type = [self parserTypeWithAttr:arrayString[0]];
+            propertyInfo->type = [self parserTypeWithAttr:arrayString[0]];
         }else {
-            propertyInfo.class = NSClassFromString(arrayString[1]);
+            [propertyInfo setClass: NSClassFromString(arrayString[1]) valueClass:valueClass];
         }
         return propertyInfo;
     }else {
@@ -700,9 +692,9 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                 free(properties);
                 propertyInfo = [WHC_ModelPropertyInfo new];
                 if (arrayString.count == 1) {
-                    propertyInfo.type = [self parserTypeWithAttr:arrayString[0]];
+                    propertyInfo->type = [self parserTypeWithAttr:arrayString[0]];
                 }else {
-                    propertyInfo.class = NSClassFromString(arrayString[1]);
+                    [propertyInfo setClass: NSClassFromString(arrayString[1]) valueClass:valueClass];
                 }
                 return propertyInfo;
             }
@@ -710,7 +702,7 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
         free(properties);
         Class superClass = class_getSuperclass(object.class);
         if (superClass && superClass != [NSObject class]) {
-            propertyInfo = [self classExistProperty:property withObject:superClass.new];
+            propertyInfo = [self classExistProperty:property withObject:superClass.new valueClass:valueClass];
             if (propertyInfo != nil) {
                 return propertyInfo;
             }
@@ -745,12 +737,12 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                 if (propertyInfo == nil) {
                     if (replacePropertyClassMap) {
                         propertyInfo = [WHC_ModelPropertyInfo new];
-                        propertyInfo.class = replacePropertyClassMap[actualProperty];
+                        [propertyInfo setClass:replacePropertyClassMap[actualProperty] valueClass:[obj class]];
                     }else {
                         if ([class respondsToSelector:@selector(whc_ModelReplacePropertyClassMapper)]) {
                             [class setModelPropertyClassMapper:[class whc_ModelReplacePropertyClassMapper]];
                         }
-                        propertyInfo = [self classExistProperty:actualProperty withObject:modelObject];
+                        propertyInfo = [self classExistProperty:actualProperty withObject:modelObject valueClass:[obj class]];
                     }
                     if (propertyInfo) {
                         [class setModelInfo:propertyInfo property:actualProperty];
@@ -765,9 +757,9 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                         }
                         setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[actualProperty substringToIndex:1].uppercaseString, [actualProperty substringFromIndex:1]]);
                     }
-                    propertyInfo.setter = setter;
+                    propertyInfo->setter = setter;
                 }
-                switch (propertyInfo.type) {
+                switch (propertyInfo->type) {
                     case _Array:
                         if(![subObject isKindOfClass:[NSNull class]]){
                             Class subModelClass = NULL;
@@ -787,13 +779,13 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                                 }
                             }
                             if (subModelClass) {
-                                ((void (*)(id, SEL, NSArray *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, [self handleDataModelEngine:subObject class:subModelClass]);
+                                ((void (*)(id, SEL, NSArray *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, [self handleDataModelEngine:subObject class:subModelClass]);
                             }else {
-                                ((void (*)(id, SEL, NSArray *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, subObject);
+                                ((void (*)(id, SEL, NSArray *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, subObject);
                             }
                             
                         }else{
-                            ((void (*)(id, SEL, NSArray *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, @[]);
+                            ((void (*)(id, SEL, NSArray *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, @[]);
                         }
                         break;
                     case _Dictionary:
@@ -821,68 +813,68 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                                 [subObject enumerateKeysAndObjectsUsingBlock:^(NSString * key, id  _Nonnull obj, BOOL * _Nonnull stop) {
                                     [subObjectDictionary setObject:[self handleDataModelEngine:obj class:subModelClass] forKey:key];
                                 }];
-                                ((void (*)(id, SEL, NSDictionary *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, subObjectDictionary);
+                                ((void (*)(id, SEL, NSDictionary *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, subObjectDictionary);
                             }else {
-                                ((void (*)(id, SEL, NSArray *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, subObject);
+                                ((void (*)(id, SEL, NSArray *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, subObject);
                             }
                             
                         }else{
-                            ((void (*)(id, SEL, NSDictionary *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, @{});
+                            ((void (*)(id, SEL, NSDictionary *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, @{});
                         }
                         break;
                     case _String:
                         if(![subObject isKindOfClass:[NSNull class]]){
-                            ((void (*)(id, SEL, NSString *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, subObject);
+                            ((void (*)(id, SEL, NSString *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, subObject);
                         }else{
-                            ((void (*)(id, SEL, NSString *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, @"");
+                            ((void (*)(id, SEL, NSString *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, @"");
                         }
                         break;
                     case _Number:
                         if(![subObject isKindOfClass:[NSNull class]]){
-                            ((void (*)(id, SEL, NSNumber *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, subObject);
+                            ((void (*)(id, SEL, NSNumber *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, subObject);
                         }else{
-                            ((void (*)(id, SEL, NSNumber *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, @(0));
+                            ((void (*)(id, SEL, NSNumber *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, @(0));
                         }
                         break;
                     case _Integer:
-                        ((void (*)(id, SEL, NSInteger))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, [subObject integerValue]);
+                        ((void (*)(id, SEL, NSInteger))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, [subObject integerValue]);
                         break;
                     case _UInteger:
-                        ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, [subObject unsignedIntegerValue]);
+                        ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, [subObject unsignedIntegerValue]);
                         break;
                     case _Boolean:
-                        ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, [subObject boolValue]);
+                        ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, [subObject boolValue]);
                         break;
                     case _Float:
-                        ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, [subObject floatValue]);
+                        ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, [subObject floatValue]);
                         break;
                     case _Double:
-                        ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, [subObject doubleValue]);
+                        ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, [subObject doubleValue]);
                         break;
                     case _Char:
-                        ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, [subObject charValue]);
+                        ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, [subObject charValue]);
                         break;
                     case _Model:
-                        ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, [self handleDataModelEngine:subObject class:propertyInfo.class]);
+                        ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, [self handleDataModelEngine:subObject class:propertyInfo->class]);
                         break;
                     case _Date:
                         if(![subObject isKindOfClass:[NSNull class]]){
-                            ((void (*)(id, SEL, NSDate *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, subObject);
+                            ((void (*)(id, SEL, NSDate *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, subObject);
                         }
                         break;
                     case _Value:
                         if(![subObject isKindOfClass:[NSNull class]]){
-                            ((void (*)(id, SEL, NSValue *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, subObject);
+                            ((void (*)(id, SEL, NSValue *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, subObject);
                         }
                         break;
                     case _Data: {
                         if(![subObject isKindOfClass:[NSNull class]]){
-                            ((void (*)(id, SEL, NSData *))(void *) objc_msgSend)((id)modelObject, propertyInfo.setter, subObject);
+                            ((void (*)(id, SEL, NSData *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, subObject);
                         }
                         break;
                     }
                     default:
-                        
+    
                         break;
                 }
             }];

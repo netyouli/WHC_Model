@@ -516,6 +516,7 @@
         @autoreleasepool {
             for (int i = 0; i < count; i++) {
                 NSData *data = [NSKeyedArchiver archivedDataWithRootObject:feed];
+                WHCWeiboStatus * status = [NSKeyedUnarchiver unarchiveObjectWithData:data];
                 [holder addObject:data];
             }
         }
