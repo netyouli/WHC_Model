@@ -436,11 +436,6 @@
     NSString *path = [[NSBundle mainBundle] pathForResource:@"weibo" ofType:@"json"];
     NSData *data = [NSData dataWithContentsOfFile:path];
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    
-//    WHCWeiboStatus * status = [WHCWeiboStatus whc_ModelWithDictionary:json];
-//    NSLog(@"status = %@",status);
-//    YYWeiboStatus *feed = [YYWeiboStatus yy_modelWithJSON:json];
-//    NSLog(@"feed = %@",feed);
 
     
     /// Benchmark
@@ -516,7 +511,6 @@
         @autoreleasepool {
             for (int i = 0; i < count; i++) {
                 NSData *data = [NSKeyedArchiver archivedDataWithRootObject:feed];
-                WHCWeiboStatus * status = [NSKeyedUnarchiver unarchiveObjectWithData:data];
                 [holder addObject:data];
             }
         }
