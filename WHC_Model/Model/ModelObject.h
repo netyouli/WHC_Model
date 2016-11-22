@@ -18,6 +18,8 @@
 @property (nonatomic , copy) NSString              * RequestTime;
 @property (nonatomic , copy) NSString              * SessionId;
 
+@property (nonatomic , strong) NSNumber * testNum;
+
 @end
 
 @interface ChangeRule :NSObject<NSCoding, NSCopying>

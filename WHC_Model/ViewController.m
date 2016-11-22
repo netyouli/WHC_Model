@@ -66,6 +66,15 @@
     
     /************** 指定路径只解析Head对象 **************/
     Head * head = [Head whc_ModelWithJson:jsonString keyPath:@"Head"];
+    head.testNum = [NSNumber numberWithInt:100];
+    {
+        /************** 归档对象 **************/
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:head];
+        
+        /************** 解归档对象 **************/
+        Head * tempHead = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        NSLog(@"tempHead.testNum = %@",tempHead.testNum);
+    }
     NSLog(@"指定路径只解析Head对象 head = %@\n\n\n",head);
     
     /************** 指定路径只解析ResponseBody对象 **************/

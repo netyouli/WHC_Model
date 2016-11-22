@@ -226,7 +226,12 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                 if (propertyInfo == nil) {
                     propertyInfo = [WHC_ModelPropertyInfo new];
                     const char * attributes = property_getAttributes(property);
-                    propertyInfo->type = [self.class parserTypeWithAttr:[NSString stringWithUTF8String:attributes]];
+                    NSArray * attributesArray = [[NSString stringWithUTF8String:attributes] componentsSeparatedByString:@"\""];
+                    if (attributesArray.count != 1) {
+                        propertyInfo->type = _Number;
+                    }else {
+                        propertyInfo->type = [self.class parserTypeWithAttr:[NSString stringWithUTF8String:attributes]];
+                    }
                     propertyInfo->setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
                 }
                 switch (propertyInfo->type) {
@@ -247,6 +252,9 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                         break;
                     case _UInteger:
                         ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value unsignedIntegerValue]);
+                        break;
+                    case _Number:
+                        ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)self, propertyInfo->setter, value);
                         break;
                     default:
                         break;
