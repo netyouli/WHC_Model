@@ -81,6 +81,8 @@
 		FE049B491DCB433E004B899E /* WHCWeiboModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FE049B481DCB433E004B899E /* WHCWeiboModel.m */; };
 		FE42448B1DCD7EAD007C79E0 /* NSObject+YYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FE4244871DCD7EAD007C79E0 /* NSObject+YYModel.m */; };
 		FE42448C1DCD7EAD007C79E0 /* YYClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = FE4244891DCD7EAD007C79E0 /* YYClassInfo.m */; };
+		FECFD2E41DEEB78600EC7C42 /* Test.json in Resources */ = {isa = PBXBuildFile; fileRef = FECFD2E31DEEB78600EC7C42 /* Test.json */; };
+		FECFD2E71DEEB79E00EC7C42 /* Test.m in Sources */ = {isa = PBXBuildFile; fileRef = FECFD2E61DEEB79E00EC7C42 /* Test.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -256,6 +258,9 @@
 		FE4244881DCD7EAD007C79E0 /* YYClassInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYClassInfo.h; sourceTree = "<group>"; };
 		FE4244891DCD7EAD007C79E0 /* YYClassInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYClassInfo.m; sourceTree = "<group>"; };
 		FE42448A1DCD7EAD007C79E0 /* YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYModel.h; sourceTree = "<group>"; };
+		FECFD2E31DEEB78600EC7C42 /* Test.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Test.json; sourceTree = "<group>"; };
+		FECFD2E51DEEB79E00EC7C42 /* Test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Test.h; sourceTree = "<group>"; };
+		FECFD2E61DEEB79E00EC7C42 /* Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Test.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -314,6 +319,9 @@
 				D9B194791BAC737000F93933 /* JSWeiboModel.m */,
 				D9B1947A1BAC737000F93933 /* MJWeiboModel.h */,
 				D9B1947B1BAC737000F93933 /* MJWeiboModel.m */,
+				FECFD2E51DEEB79E00EC7C42 /* Test.h */,
+				FECFD2E61DEEB79E00EC7C42 /* Test.m */,
+				FECFD2E31DEEB78600EC7C42 /* Test.json */,
 				D9B1947C1BAC737000F93933 /* user.json */,
 				D9B1947D1BAC737000F93933 /* weibo.json */,
 				D9EB031D1BD5F96900B3E0F5 /* Swift */,
@@ -707,6 +715,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D9EB031C1BD5F96100B3E0F5 /* Cartfile.bak in Resources */,
+				FECFD2E41DEEB78600EC7C42 /* Test.json in Resources */,
 				D9B194851BAC737000F93933 /* user.json in Resources */,
 				D9B1938A1BAC714D00F93933 /* Main.storyboard in Resources */,
 				D9B1938F1BAC714D00F93933 /* LaunchScreen.xib in Resources */,
@@ -734,6 +743,7 @@
 				D9EB040B1BD64D1E00B3E0F5 /* MJPropertyKey.m in Sources */,
 				FE049B461DCADC68004B899E /* NSObject+WHC_Model.m in Sources */,
 				D9EB04001BD64D1E00B3E0F5 /* NSDictionary+MTLJSONKeyPath.m in Sources */,
+				FECFD2E71DEEB79E00EC7C42 /* Test.m in Sources */,
 				D9EB03E21BD64D1E00B3E0F5 /* FEMRelationship.m in Sources */,
 				D9EB03E11BD64D1E00B3E0F5 /* FEMMapping.m in Sources */,
 				D9EB04081BD64D1E00B3E0F5 /* MJExtensionConst.m in Sources */,

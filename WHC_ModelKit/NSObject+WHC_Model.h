@@ -44,11 +44,11 @@ return self; \
 
 @protocol WHC_ModelKeyValue <NSObject>
 @optional
-/// 模型类可自定义属性名称
+/// 模型类可自定义属性名称<json key名, 替换实际属性名>
 + (NSDictionary <NSString *, NSString *> *)whc_ModelReplacePropertyMapper;
-/// 模型数组/字典元素可自定义类
+/// 模型数组/字典元素对象可自定义类<替换实际属性名,实际类>
 + (NSDictionary <NSString *, Class> *)whc_ModelReplaceContainerElementClassMapper;
-/// 模型类可自定义属性类型
+/// 模型类可自定义属性类型<替换实际属性名,实际类>
 + (NSDictionary <NSString *, Class> *)whc_ModelReplacePropertyClassMapper;
 
 @end

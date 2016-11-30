@@ -713,7 +713,7 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
 
 + (id)handleDataModelEngine:(id)object class:(Class)class {
     if(object) {
-        if([object isKindOfClass:[NSDictionary class]]){
+        if([object isKindOfClass:[NSDictionary class]]) {
             NSObject *  modelObject = [class new];
             NSDictionary  * dictionary = object;
             __block NSDictionary <NSString *, NSString *> * replacePropertyNameMap = [class getModelReplacePropertyMapper];
@@ -888,6 +888,8 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                 }
             }];
             return modelObjectArr;
+        }else {
+            return object;
         }
     }
     return nil;

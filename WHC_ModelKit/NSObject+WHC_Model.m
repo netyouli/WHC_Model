@@ -896,6 +896,8 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                 }
             }];
             return modelObjectArr;
+        }else {
+            return object;
         }
     }
     return nil;

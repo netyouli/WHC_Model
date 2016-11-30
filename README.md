@@ -33,7 +33,7 @@ Time lost (Benchmark 1000 times)
 集成
 ==============
 * 使用CocoaPods:
-  -  pod 'WHC_Model', '~> 1.6.1'
+  -  pod 'WHC_Model', '~> 1.6.2'
 * 手工集成:
   -  导入文件夹WHC_ModelKit
 
@@ -91,6 +91,22 @@ Time lost (Benchmark 1000 times)
 ```Objective-C
     ResponseBody * copyBody = body.copy;
     NSLog(@"copyBody = %@",copyBody);
+```
+自定义别名
+==============
+```Objective-C
+/// 模型类可自定义属性名称
++ (NSDictionary <NSString *, NSString *> *)whc_ModelReplacePropertyMapper {
+    return @{<json key名: 替换实际属性名>};
+}
+/// 模型数组/字典元素对象可自定义类
++ (NSDictionary <NSString *, Class> *)whc_ModelReplaceContainerElementClassMapper {
+    return @{替换实际属性名 : 实际类};
+}
+/// 模型类可自定义属性类型
++ (NSDictionary <NSString *, Class> *)whc_ModelReplacePropertyClassMapper {
+    return @{替换实际属性名 : 实际类};
+}
 ```
 
 推荐
