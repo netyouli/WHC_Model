@@ -736,7 +736,14 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                 modelObject = [NSMutableDictionary dictionary];
                 [dictionary enumerateKeysAndObjectsUsingBlock:^(NSString * key, id  _Nonnull obj, BOOL * _Nonnull stop) {
                     if ([obj isKindOfClass:[NSDictionary class]] || [obj isKindOfClass:[NSArray class]]) {
-                        [(NSMutableDictionary *)modelObject setObject:[self handleDataModelEngine:obj class:[obj class]] forKey:key];
+                        Class subModelClass = NSClassFromString(key);
+                        if (subModelClass == nil) {
+                            subModelClass = NSClassFromString([NSString stringWithFormat:@"%@%@:",[key substringToIndex:1].uppercaseString, [key substringFromIndex:1]]);
+                            if (subModelClass == nil) {
+                                subModelClass = [obj class];
+                            }
+                        }
+                        [(NSMutableDictionary *)modelObject setObject:[self handleDataModelEngine:obj class:subModelClass] forKey:key];
                     }else {
                         [(NSMutableDictionary *)modelObject setObject:obj forKey:key];
                     }
