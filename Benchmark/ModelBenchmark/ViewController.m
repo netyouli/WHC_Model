@@ -42,10 +42,10 @@
     NSData *data = [NSData dataWithContentsOfFile:path];
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
-    NSArray * testArray = [NSString whc_ModelWithJson:json keyPath:@"data"];
+    NSArray * testArray = [NSDictionary whc_ModelWithJson:json keyPath:@"data"];
     NSLog(@"test = %@",testArray);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        //[self benchmarkGithubUser];
+        [self benchmarkGithubUser];
         [self benchmarkWeiboStatus];
         
 //        [self testRobustness];
