@@ -155,3 +155,23 @@ WHC_CodingImplementation
 }
 @end
 
+@implementation SZCategory
++ (NSDictionary <NSString *, NSString*>*)whc_ModelReplacePropertyMapper {
+    return @{@"child_node":@"subcats"};
+}
+
++ (NSDictionary <NSString *, Class>*)whc_ModelReplaceContainerElementClassMapper {
+    return @{@"subcats" : [SZSubCategory class]};
+}
+@end
+@implementation SZSubCategory
++ (NSDictionary <NSString *, NSString*>*)whc_ModelReplacePropertyMapper {
+    return @{@"child_node":@"subcats"};
+}
+
++ (NSDictionary <NSString *, Class>*)whc_ModelReplaceContainerElementClassMapper {
+    return @{@"subcats" : [SZSubCategory class]};
+}
+@end
+
+

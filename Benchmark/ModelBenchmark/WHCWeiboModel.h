@@ -146,3 +146,28 @@
 @property (nonatomic, strong) NSArray *darwinTags;
 @end
 
+
+
+@interface SZSubCategory :NSObject
+@property (nonatomic , copy) NSString              * prefix;
+@property (nonatomic , assign) NSInteger              status;
+@property (nonatomic , assign) NSInteger              site;
+@property (nonatomic , assign) NSInteger              id;
+@property (nonatomic , copy) NSString              * site_name;
+@property (nonatomic , strong) NSArray<SZSubCategory *>              * subcats;
+@property (nonatomic , copy) NSString              * name;
+
+@property (nonatomic , assign) NSInteger              created_at;
+@property (nonatomic , assign) NSInteger              version;
+@property (nonatomic , assign) NSInteger              rate;
+
+@end
+
+@interface SZCategory :NSObject
+@property (nonatomic , assign) NSInteger              id;
+@property (nonatomic , copy) NSString              * name;
+@property (nonatomic , strong) NSArray<SZSubCategory *>              * subcats;
+
+@end
+
+

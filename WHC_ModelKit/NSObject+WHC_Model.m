@@ -151,36 +151,40 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
             propertyInfo->type = [self.class parserTypeWithAttr:[NSString stringWithUTF8String:attributes]];
             propertyInfo->setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
         }
-        id value = [self valueForKey:propertyName];
-        switch (propertyInfo->type) {
-            case _Char: {
-                ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value charValue]);
+        if ([newSelf respondsToSelector:propertyInfo->setter]) {
+            id value = [self valueForKey:propertyName];
+            switch (propertyInfo->type) {
+                case _Char: {
+                    ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value charValue]);
+                }
+                    break;
+                case _Float: {
+                    ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value floatValue]);
+                }
+                    break;
+                case _Double: {
+                    ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value doubleValue]);
+                }
+                    break;
+                case _Boolean:{
+                    ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value boolValue]);
+                }
+                    break;
+                case _Integer:{
+                    ((void (*)(id, SEL, NSInteger))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value integerValue]);
+                }
+                    break;
+                case _UInteger:{
+                    ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value unsignedIntegerValue]);
+                }
+                    break;
+                default: {
+                    if (value) {
+                        ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value copy]);
+                    }
+                }
+                    break;
             }
-                break;
-            case _Float: {
-                ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value floatValue]);
-            }
-                break;
-            case _Double: {
-                ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value doubleValue]);
-            }
-                break;
-            case _Boolean:{
-                ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value boolValue]);
-            }
-                break;
-            case _Integer:{
-                ((void (*)(id, SEL, NSInteger))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value integerValue]);
-            }
-                break;
-            case _UInteger:{
-                ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value unsignedIntegerValue]);
-            }
-                break;
-            default: {
-                ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, value);
-            }
-                break;
         }
     }];
     return newSelf;
@@ -234,37 +238,41 @@ typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
                     }
                     propertyInfo->setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
                 }
-                switch (propertyInfo->type) {
-                    case _Char:
-                        ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value charValue]);
-                        break;
-                    case _Float:
-                        ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value floatValue]);
-                        break;
-                    case _Double:
-                        ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value doubleValue]);
-                        break;
-                    case _Boolean:
-                        ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value boolValue]);
-                        break;
-                    case _Integer:
-                        ((void (*)(id, SEL, NSInteger))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value integerValue]);
-                        break;
-                    case _UInteger:
-                        ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value unsignedIntegerValue]);
-                        break;
-                    case _Number:
-                        ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)self, propertyInfo->setter, value);
-                        break;
-                    default:
-                        break;
+                if ([self respondsToSelector:propertyInfo->setter]) {
+                    switch (propertyInfo->type) {
+                        case _Char:
+                            ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value charValue]);
+                            break;
+                        case _Float:
+                            ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value floatValue]);
+                            break;
+                        case _Double:
+                            ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value doubleValue]);
+                            break;
+                        case _Boolean:
+                            ((void (*)(id, SEL, BOOL))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value boolValue]);
+                            break;
+                        case _Integer:
+                            ((void (*)(id, SEL, NSInteger))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value integerValue]);
+                            break;
+                        case _UInteger:
+                            ((void (*)(id, SEL, NSUInteger))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value unsignedIntegerValue]);
+                            break;
+                        case _Number:
+                            ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)self, propertyInfo->setter, value);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }else {
                 if (propertyInfo != nil) {
                     ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)self, propertyInfo->setter, value);
                 }else {
                     SEL setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
-                    ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)self, setter, value);
+                    if ([self respondsToSelector:setter]) {
+                        ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)self, setter, value);
+                    }
                 }
             }
         }

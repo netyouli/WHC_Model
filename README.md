@@ -33,7 +33,7 @@ Time lost (Benchmark 1000 times)
 集成
 ==============
 * 使用CocoaPods:
-  -  pod 'WHC_Model', '~> 1.6.4'
+  -  pod 'WHC_Model', '~> 1.6.5'
 * 手工集成:
   -  导入文件夹WHC_ModelKit
 
