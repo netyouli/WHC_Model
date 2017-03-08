@@ -23,7 +23,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// VERSION:(1.2.0)
 #import <Foundation/Foundation.h>
 
 ///模型对象归档解归档实现

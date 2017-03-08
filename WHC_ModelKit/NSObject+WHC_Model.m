@@ -23,36 +23,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// VERSION:(1.2.0)
 
 #import "NSObject+WHC_Model.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wundeclared-selector"
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-
-typedef NS_OPTIONS(NSUInteger, WHC_TYPE) {
-    _Array = 1 << 0,
-    _Dictionary = 1 << 1,
-    _String = 1 << 2,
-    _Integer = 1 << 3,
-    _UInteger = 1 << 4,
-    _Float = 1 << 5,
-    _Double = 1 << 6,
-    _Boolean = 1 << 7,
-    _Char = 1 << 8,
-    _Number = 1 << 9,
-    _Null = 1 << 10,
-    _Model = 1 << 11,
-    _Data = 1 << 12,
-    _Date = 1 << 13,
-    _Value = 1 << 14,
-    _Url = 1 << 15,
-    _Set = 1 << 16,
-    _Unknown = 1 << 17
-};
+typedef enum : NSUInteger {
+    _Array,
+    _Dictionary,
+    _String,
+    _Integer,
+    _UInteger,
+    _Float,
+    _Double,
+    _Boolean,
+    _Char,
+    _Number,
+    _Null,
+    _Model,
+    _Data,
+    _Date,
+    _Value,
+    _Url,
+    _Set,
+    _Unknown
+} WHC_TYPE;
 
 @interface WHC_ModelPropertyInfo : NSObject {
 @public
@@ -768,7 +763,7 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                         }
                     }
                     WHC_ModelPropertyInfo * propertyInfo = [class getPropertyInfo:actualProperty];
-                    if (propertyInfo == nil) {
+                    if (propertyInfo == nil || (propertyInfo != nil && propertyInfo->type == _Unknown)) {
                         if (replacePropertyClassMap) {
                             propertyInfo = [WHC_ModelPropertyInfo new];
                             [propertyInfo setClass:replacePropertyClassMap[actualProperty] valueClass:[obj class]];
@@ -931,4 +926,3 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
 }
 
 @end
-#pragma clang diagnostic pop
