@@ -6,7 +6,7 @@ WHC_Model
 [![Pod License](http://img.shields.io/cocoapods/l/WHC_Model.svg?style=flat)](https://opensource.org/licenses/MIT)
 简介
 ==============
-- **高效**: 深度递归高性能解析架构
+- **高效**: 深度递归高性能解析架构,性能超过目前主流JsonModel，MJExtension...
 - **继承**: 支持model类继承其他model类
 - **安全**: 自动处理json中的null
 - **优势**: 高容错能力(model类属性名称和json里key名称不区分大小写)
@@ -33,7 +33,7 @@ Time lost (Benchmark 1000 times)
 集成
 ==============
 * 使用CocoaPods:
-  -  pod 'WHC_Model', '~> 1.6.5'
+  -  pod 'WHC_Model', '~> 1.6.6'
 * 手工集成:
   -  导入文件夹WHC_ModelKit
 
