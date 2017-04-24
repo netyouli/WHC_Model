@@ -38,6 +38,7 @@ typedef enum : NSUInteger {
     _Double,
     _Boolean,
     _Char,
+    _UChar,
     _Number,
     _Null,
     _Model,
@@ -150,7 +151,11 @@ typedef enum : NSUInteger {
             id value = [self valueForKey:propertyName];
             switch (propertyInfo->type) {
                 case _Char: {
-                    ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, [value charValue]);
+                    ((void (*)(id, SEL, int8_t))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, (int8_t)[value charValue]);
+                }
+                    break;
+                case _UChar: {
+                    ((void (*)(id, SEL, uint8_t))(void *) objc_msgSend)((id)newSelf, propertyInfo->setter, (uint8_t)[value unsignedCharValue]);
                 }
                     break;
                 case _Float: {
@@ -236,7 +241,10 @@ typedef enum : NSUInteger {
                 if ([self respondsToSelector:propertyInfo->setter]) {
                     switch (propertyInfo->type) {
                         case _Char:
-                            ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value charValue]);
+                            ((void (*)(id, SEL, int8_t))(void *) objc_msgSend)((id)self, propertyInfo->setter, (int8_t)[value charValue]);
+                            break;
+                        case _UChar:
+                            ((void (*)(id, SEL, uint8_t))(void *) objc_msgSend)((id)self, propertyInfo->setter, (uint8_t)[value unsignedCharValue]);
                             break;
                         case _Float:
                             ((void (*)(id, SEL, float))(void *) objc_msgSend)((id)self, propertyInfo->setter, [value floatValue]);
@@ -437,8 +445,13 @@ typedef enum : NSUInteger {
                 }
                     break;
                 case _Char: {
-                    char value = ((char (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
-                    [jsonDictionary setObject:[NSNumber numberWithChar:value] forKey:propertyName];
+                    int8_t value = ((int8_t (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
+                    [jsonDictionary setObject:@(value) forKey:propertyName];
+                }
+                    break;
+                case _UChar: {
+                    uint8_t value = ((uint8_t (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
+                    [jsonDictionary setObject:@(value) forKey:propertyName];
                 }
                     break;
                 case _Float: {
@@ -648,8 +661,10 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
             attr_type = _Boolean;
             break;
         case 'c':
-        case 'C':
             attr_type = _Char;
+            break;
+        case 'C':
+            attr_type = _UChar;
             break;
         case 'S':
         case 'I':
@@ -881,7 +896,10 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                             ((void (*)(id, SEL, double))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, [subObject doubleValue]);
                             break;
                         case _Char:
-                            ((void (*)(id, SEL, char))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, [subObject charValue]);
+                            ((void (*)(id, SEL, int8_t))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, (int8_t)[subObject charValue]);
+                            break;
+                        case _UChar:
+                            ((void (*)(id, SEL, uint8_t))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, (uint8_t)[subObject unsignedCharValue]);
                             break;
                         case _Model:
                             ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, [self handleDataModelEngine:subObject class:propertyInfo->class]);

@@ -227,6 +227,6 @@
 
 @interface ModelObject :ModelObjectSuper<NSCoding, NSCopying>
 @property (nonatomic , strong) ResponseBody              * ResponseBody;
-
+@property (nonatomic , assign) char mm;
 @end
 
