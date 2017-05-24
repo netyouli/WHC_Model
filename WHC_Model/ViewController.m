@@ -82,7 +82,7 @@
     NSLog(@"指定路径只解析ResponseBody对象 ResponseBody = %@\n\n\n",body);
     
     /************** 指定路径只解析PolicyRuleList集合中第一个对象 **************/
-    PolicyRuleList * rule = [PolicyRuleList whc_ModelWithJson:jsonString keyPath:@"ResponseBody.PolicyRuleList[0]"];
+    PolicyRuleList * rule = [PolicyRuleList whc_ModelWithJson:jsonString keyPath:@"ResponseBody.PolicyRuleList[10]"];
     NSLog(@"指定路径只解析PolicyRuleList集合中第一个对象 rule = %@\n\n\n",rule);
     
     /************** 归档对象 **************/

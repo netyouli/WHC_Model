@@ -327,12 +327,26 @@ typedef enum : NSUInteger {
                         jsonObject = jsonObject[realKey];
                         indexString = [key substringFromIndex:range.location];
                     }
-                    NSString * handleIndexString = [indexString stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"[]"]];
-                    NSInteger indexLength = handleIndexString.length;
-                    for (NSUInteger i = 0; i < indexLength; i++) {
-                        NSInteger index = [[handleIndexString substringWithRange:NSMakeRange(i, 1)] integerValue];
-                        jsonObject = jsonObject[index];
+                    NSString * handleIndexString = [indexString stringByReplacingOccurrencesOfString:@"]" withString:@","];
+                    handleIndexString = [handleIndexString stringByReplacingOccurrencesOfString:@"[" withString:@""];
+                    if ([handleIndexString hasSuffix:@","]) {
+                        handleIndexString = [handleIndexString substringToIndex:handleIndexString.length - 1];
                     }
+                    NSArray * indexArray = [handleIndexString componentsSeparatedByString:@","];
+                    [indexArray enumerateObjectsUsingBlock:^(NSString * indexObj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        NSInteger index = indexObj.integerValue;
+                        if (index >= 0) {
+                            if ([jsonObject isKindOfClass:[NSArray class]]) {
+                                jsonObject = jsonObject[index];
+                            }else {
+                                jsonObject = nil;
+                                NSLog(@"WHC_Model: keyPath 数组下标 值异常");
+                            }
+                        }else {
+                            jsonObject = nil;
+                            NSLog(@"WHC_Model: keyPath 数组下标 值异常");
+                        }
+                    }];
                 }else {
                     jsonObject = jsonObject[key];
                 }
@@ -671,6 +685,7 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
         case 'L':
         case 'Q':
             attr_type = _UInteger;
+            break;
         case 'l':
         case 'q':
         case 'i':
