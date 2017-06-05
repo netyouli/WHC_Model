@@ -145,7 +145,11 @@ typedef enum : NSUInteger {
             propertyInfo = [WHC_ModelPropertyInfo new];
             const char * attributes = property_getAttributes(property);
             propertyInfo->type = [self.class parserTypeWithAttr:[NSString stringWithUTF8String:attributes]];
-            propertyInfo->setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
+            if (propertyName.length > 1) {
+                propertyInfo->setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
+            }else {
+                propertyInfo->setter = NSSelectorFromString([NSString stringWithFormat:@"set%@:",propertyName.uppercaseString]);
+            }
         }
         if ([newSelf respondsToSelector:propertyInfo->setter]) {
             id value = [self valueForKey:propertyName];
@@ -236,7 +240,11 @@ typedef enum : NSUInteger {
                     }else {
                         propertyInfo->type = [self.class parserTypeWithAttr:[NSString stringWithUTF8String:attributes]];
                     }
-                    propertyInfo->setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
+                    if (propertyName.length > 1) {
+                        propertyInfo->setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
+                    }else {
+                        propertyInfo->setter = NSSelectorFromString([NSString stringWithFormat:@"set%@:",propertyName.uppercaseString]);
+                    }
                 }
                 if ([self respondsToSelector:propertyInfo->setter]) {
                     switch (propertyInfo->type) {
@@ -272,7 +280,12 @@ typedef enum : NSUInteger {
                 if (propertyInfo != nil) {
                     ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)self, propertyInfo->setter, value);
                 }else {
-                    SEL setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
+                    SEL setter = nil;
+                    if (propertyName.length > 1) {
+                        setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[propertyName substringToIndex:1].uppercaseString, [propertyName substringFromIndex:1]]);
+                    }else {
+                        setter = NSSelectorFromString([NSString stringWithFormat:@"set%@:",propertyName.uppercaseString]);
+                    }
                     if ([self respondsToSelector:setter]) {
                         ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)self, setter, value);
                     }
@@ -808,13 +821,22 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                         }else {
                             return;
                         }
-                        SEL setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[actualProperty substringToIndex:1].uppercaseString, [actualProperty substringFromIndex:1]]);
+                        SEL setter = nil;
+                        if (actualProperty.length > 1) {
+                            setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[actualProperty substringToIndex:1].uppercaseString, [actualProperty substringFromIndex:1]]);
+                        }else {
+                            setter = NSSelectorFromString([NSString stringWithFormat:@"set%@:",actualProperty.uppercaseString]);
+                        }
                         if (![modelObject respondsToSelector:setter]) {
                             actualProperty = [self existproperty:actualProperty withObject:modelObject];
                             if (actualProperty == nil) {
                                 return;
                             }
-                            setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[actualProperty substringToIndex:1].uppercaseString, [actualProperty substringFromIndex:1]]);
+                            if (actualProperty.length > 1) {
+                                setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:",[actualProperty substringToIndex:1].uppercaseString, [actualProperty substringFromIndex:1]]);
+                            }else {
+                                setter = NSSelectorFromString([NSString stringWithFormat:@"set%@:",actualProperty.uppercaseString]);
+                            }
                         }
                         propertyInfo->setter = setter;
                     }
