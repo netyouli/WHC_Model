@@ -807,7 +807,7 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                     }
                     WHC_ModelPropertyInfo * propertyInfo = [class getPropertyInfo:actualProperty];
                     if (propertyInfo == nil || (propertyInfo != nil && propertyInfo->type == _Unknown)) {
-                        if (replacePropertyClassMap) {
+                        if (replacePropertyClassMap && replacePropertyClassMap[actualProperty]) {
                             propertyInfo = [WHC_ModelPropertyInfo new];
                             [propertyInfo setClass:replacePropertyClassMap[actualProperty] valueClass:[obj class]];
                         }else {

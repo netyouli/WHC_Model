@@ -10,13 +10,13 @@ Pod::Spec.new do |s|
 
   s.author             = { "吴海超(WHC)" => "712641411@qq.com" }
 
-  s.platform     = :ios
-  s.platform     = :ios, "6.0"
-
   s.source       = { :git => "https://github.com/netyouli/WHC_Model.git", :tag => "1.6.9"}
 
   s.source_files  = "WHC_ModelKit/*.{h,m}"
 
+  s.ios.deployment_target = '6.0'
+  s.osx.deployment_target = '10.9'
+  s.tvos.deployment_target = '7.0'
   # s.public_header_files = "Classes/**/*.h"
 
 
