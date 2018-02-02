@@ -807,9 +807,10 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                     }
                     WHC_ModelPropertyInfo * propertyInfo = [class getPropertyInfo:actualProperty];
                     if (propertyInfo == nil || (propertyInfo != nil && propertyInfo->type == _Unknown)) {
-                        if (replacePropertyClassMap && replacePropertyClassMap[actualProperty]) {
+                        id propertyClass = replacePropertyClassMap[actualProperty];
+                        if (replacePropertyClassMap && propertyClass) {
                             propertyInfo = [WHC_ModelPropertyInfo new];
-                            [propertyInfo setClass:replacePropertyClassMap[actualProperty] valueClass:[obj class]];
+                            [propertyInfo setClass:propertyClass valueClass:[obj class]];
                         }else {
                             if ([class respondsToSelector:@selector(whc_ModelReplacePropertyClassMapper)]) {
                                 [class setModelPropertyClassMapper:[class whc_ModelReplacePropertyClassMapper]];
