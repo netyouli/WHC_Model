@@ -83,7 +83,7 @@ return self; \
  *@return json字符串
  */
 
-- (NSString *)whc_Json;
+- (NSString *)whc_JsonIsFormat:(BOOL)isFormat;
 
 #pragma mark - 模型对象序列化 Api -
 

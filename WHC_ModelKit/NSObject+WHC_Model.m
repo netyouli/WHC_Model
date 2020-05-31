@@ -381,7 +381,7 @@ typedef enum : NSUInteger {
 
 #pragma mark - 模型对象转json Api -
 
-- (NSString *)whc_Json {
+- (NSString *)whc_JsonIsFormat:(BOOL)isFormat {
     id jsonSet = nil;
     if ([self isKindOfClass:[NSDictionary class]]) {
         jsonSet = [self parserDictionaryEngine:(NSDictionary *)self];
@@ -390,7 +390,7 @@ typedef enum : NSUInteger {
     }else {
         jsonSet = [self whc_Dictionary];
     }
-    NSData * jsonData = [NSJSONSerialization dataWithJSONObject:jsonSet options:kNilOptions error:nil];
+    NSData * jsonData = [NSJSONSerialization dataWithJSONObject:jsonSet options:isFormat ? NSJSONWritingPrettyPrinted : kNilOptions error:nil];
     return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
@@ -403,7 +403,7 @@ typedef enum : NSUInteger {
         [superClass whc_EnumeratePropertyNameUsingBlock:^(NSString *propertyName, NSUInteger index, BOOL *stop) {
             [superObject setValue:[self valueForKey:propertyName] forKey:propertyName];
         }];
-        [jsonDictionary setDictionary:[superObject whc_Dictionary]];
+        [jsonDictionary addEntriesFromDictionary:[superObject whc_Dictionary]];
     }
     NSDictionary <NSString *, WHC_ModelPropertyInfo *> * propertyInfoMap = [self.class getModelPropertyDictionary];
     [self.class whc_EnumeratePropertyAttributesUsingBlock:^(NSString *propertyName, objc_property_t property, NSUInteger index, BOOL *stop) {
@@ -449,7 +449,7 @@ typedef enum : NSUInteger {
                 case _String:
                 case _Number: {
                     id value = ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo->getter);
-                    if (value != nil) {
+                    if (value != nil && ([value isKindOfClass:[NSString class]] || [value isKindOfClass:[NSNumber class]])) {
                         [jsonDictionary setObject:value forKey:propertyName];
                     }else {
                         [jsonDictionary setObject:[NSNull new] forKey:propertyName];
@@ -905,14 +905,14 @@ static const char  WHC_ReplaceContainerElementClass = '\0';
                             }
                             break;
                         case _String:
-                            if(![subObject isKindOfClass:[NSNull class]]){
+                            if(![subObject isKindOfClass:[NSNull class]] && [subObject isKindOfClass:[NSString class]]){
                                 ((void (*)(id, SEL, NSString *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, subObject);
                             }else{
                                 ((void (*)(id, SEL, NSString *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, @"");
                             }
                             break;
                         case _Number:
-                            if(![subObject isKindOfClass:[NSNull class]]){
+                            if(![subObject isKindOfClass:[NSNull class]] && [subObject isKindOfClass:[NSNumber class]]){
                                 ((void (*)(id, SEL, NSNumber *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, subObject);
                             }else{
                                 ((void (*)(id, SEL, NSNumber *))(void *) objc_msgSend)((id)modelObject, propertyInfo->setter, @(0));
